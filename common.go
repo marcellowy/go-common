@@ -81,3 +81,8 @@ func PathExists(path string) (bool, error) {
 	}
 	return false, err
 }
+
+// 将时间缀格式为YYYY-MM-DD HH:mm:ss
+func FormatTime(i int) string {
+	return time.Unix(int64(i), 0).Format("2006-01-02 :15:04:05")
+}
