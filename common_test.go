@@ -25,3 +25,13 @@ func TestRandStr(t *testing.T) {
 		return
 	}
 }
+
+func TestRemoveSameFromStringSlice(t *testing.T) {
+	var s = []string{"1", "2", "1"}
+	var r = RemoveSameFromStringSlice(s)
+	if len(r) != 2 {
+		t.Error("error")
+	}
+	fmt.Println(r)
+
+}
