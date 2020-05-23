@@ -3,6 +3,9 @@ package common
 import (
 	"math/rand"
 	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -85,4 +88,19 @@ func PathExists(path string) (bool, error) {
 // 将时间缀格式为YYYY-MM-DD HH:mm:ss
 func FormatTime(i int) string {
 	return time.Unix(int64(i), 0).Format("2006-01-02 :15:04:05")
+}
+
+// 返回工作目录
+func GetCurrentDirectory() string {
+
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0])) //返回绝对路径  filepath.Dir(os.Args[0])去除最后一个元素的路径
+	if err != nil {
+		return ""
+	}
+
+	if runtime.GOOS == "windows" {
+		// 只有windows需要替换
+		return strings.Replace(dir, "\\", "/", -1) //将\替换成/
+	}
+	return dir
 }

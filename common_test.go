@@ -35,3 +35,7 @@ func TestRemoveSameFromStringSlice(t *testing.T) {
 	fmt.Println(r)
 
 }
+
+func TestGetCurrentDirectory(t *testing.T) {
+	fmt.Println(GetCurrentDirectory())
+}
