@@ -75,3 +75,27 @@ func CloseViaGorm(db **gorm.DB) {
 		(*db).Close()
 	}
 }
+
+func TransactionWithGorm(db *gorm.DB, cb func(tx *gorm.DB) error) error {
+
+	var err error
+	var tx *gorm.DB
+
+	// 打开事务
+	if tx = db.Begin(); tx.Error != nil {
+		return tx.Error
+	}
+	defer tx.RollbackUnlessCommitted()
+
+	// 执行逻辑
+	if err = cb(tx); err != nil {
+		return err
+	}
+
+	// 提交事务
+	if err = tx.Commit().Error; err != nil {
+		return err
+	}
+
+	return nil
+}
