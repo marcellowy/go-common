@@ -76,6 +76,7 @@ func CloseViaGorm(db **gorm.DB) {
 	}
 }
 
+// 事务执行
 func TransactionWithGorm(db *gorm.DB, cb func(tx *gorm.DB) error) error {
 
 	var err error

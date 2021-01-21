@@ -32,7 +32,7 @@ func IsNumber(s string) bool {
 // 随机字符串
 func RandStr(length int) []byte {
 
-	var b []byte
+	var b = make([]byte, length) // 一次性分配空间, 避免slice的二次空间分配
 	if length <= 0 {
 		return b
 	}
@@ -52,7 +52,7 @@ func RandStr(length int) []byte {
 
 	var l = len(a)
 	for i := 0; i < length; i++ {
-		b = append(b, a[rand.Intn(l-1)])
+		b[i] = a[rand.Intn(l-1)]
 	}
 
 	return b
