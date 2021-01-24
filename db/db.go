@@ -17,7 +17,7 @@ func Connect(conn **sql.DB, config *Config) (err error) {
 		config.Charset = "UTF8MB4"
 	}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?autocommit=true&charset=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?autocommit=true&charset=%s&loc=Asia%%2FShanghai",
 		config.Username, config.Password, config.Host, config.Port, config.DbName, config.Charset)
 
 	//fmt.Printf("database connection string: %s\n", dsn)
@@ -54,7 +54,7 @@ func ConnectViaGorm(db **gorm.DB, config *Config) (err error) {
 		config.Charset = "UTF8MB4"
 	}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=True&autocommit=true&charset=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=True&autocommit=true&charset=%s&loc=Asia%%2FShanghai",
 		config.Username, config.Password, config.Host, config.Port, config.DbName, config.Charset)
 
 	if *db, err = gorm.Open("mysql", dsn); err != nil {

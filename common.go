@@ -13,6 +13,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+const TimeFormatString = "2006-01-02 :15:04:05"
+
 //  判断一个字符串是不是全都是数字
 func IsNumber(s string) bool {
 
@@ -87,7 +89,7 @@ func PathExists(path string) (bool, error) {
 
 // 将时间缀格式为YYYY-MM-DD HH:mm:ss
 func FormatTime(i int64) string {
-	return time.Unix(i, 0).Format("2006-01-02 :15:04:05")
+	return time.Unix(i, 0).Format(TimeFormatString)
 }
 
 // 返回工作目录
