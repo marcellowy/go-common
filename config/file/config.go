@@ -5,6 +5,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"gitee.com/marcellos/wyi-common/crypto"
+
+	"github.com/fsnotify/fsnotify"
+
 	"gitee.com/marcellos/wyi-common/config/internal"
 
 	common "gitee.com/marcellos/wyi-common"
@@ -13,13 +17,14 @@ import (
 )
 
 // New 从文件初始化配置
-func New(file string) (*viper.Viper, error) {
+func New(file string, cb func()) (*viper.Viper, error) {
 
 	var (
-		dir      = filepath.Dir(file)
-		filename = filepath.Base(file)
-		err      error
-		ok       bool
+		dir           = filepath.Dir(file)
+		filename      = filepath.Base(file)
+		err           error
+		ok            bool
+		hash, newHash string
 	)
 
 	if ok, err = common.PathExists(file); err != nil || !ok {
@@ -45,6 +50,24 @@ func New(file string) (*viper.Viper, error) {
 	if err = v.ReadInConfig(); err != nil {
 		return nil, err
 	}
+
+	hash, err = crypto.FileMd5(file)
+	if err != nil {
+		return nil, err
+	}
+
+	v.WatchConfig()
+
+	v.OnConfigChange(func(in fsnotify.Event) {
+		if newHash, err = crypto.FileMd5(file); err != nil {
+			return
+		}
+
+		if hash != newHash {
+			hash = newHash
+			cb()
+		}
+	})
 
 	return v, nil
 }

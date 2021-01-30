@@ -1,9 +1,22 @@
 package file
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/spf13/viper"
+)
 
 func TestNew(t *testing.T) {
-	c, err := New("H:/tmp/config.yaml")
+
+	var (
+		c   *viper.Viper
+		err error
+	)
+
+	c, err = New("H:/tmp/config.yaml", func() {
+		fmt.Println(c.GetString("redis.password"))
+	})
 	if err != nil {
 		t.Error(err)
 		return
@@ -13,5 +26,4 @@ func TestNew(t *testing.T) {
 		t.Errorf("bool value error")
 		return
 	}
-
 }
