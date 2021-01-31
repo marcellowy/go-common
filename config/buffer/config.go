@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"gitee.com/marcellos/wyi-common/config/internal"
-
 	"github.com/spf13/viper"
 )
 
