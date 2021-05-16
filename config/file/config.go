@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"gitee.com/marcellos/wyi-common/base"
+
 	"gitee.com/marcellos/wyi-common/crypto"
 
 	"github.com/fsnotify/fsnotify"
 
 	"gitee.com/marcellos/wyi-common/config/internal"
-
-	common "gitee.com/marcellos/wyi-common"
 
 	"github.com/spf13/viper"
 )
@@ -27,7 +27,7 @@ func New(file string, cb func()) (*viper.Viper, error) {
 		hash, newHash string
 	)
 
-	if ok, err = common.PathExists(file); err != nil || !ok {
+	if ok, err = base.PathExists(file); err != nil || !ok {
 		return nil, fmt.Errorf("file not exists or no permission")
 	}
 
