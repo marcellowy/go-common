@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"fmt"
 
+	"gitee.com/marcellos/wyi-common/config"
+
 	"gitee.com/marcellos/wyi-common/config/internal"
-	"github.com/spf13/viper"
 )
 
 // New 从buffer实例化配置
-func New(buffer *bytes.Buffer, ext string) (*viper.Viper, error) {
+func New(buffer *bytes.Buffer, ext string) (*config.Config, error) {
 
 	var (
 		err error
@@ -19,7 +20,7 @@ func New(buffer *bytes.Buffer, ext string) (*viper.Viper, error) {
 		return nil, fmt.Errorf("configuration file are not supported")
 	}
 
-	v := viper.New()
+	v := config.New()
 	{
 		v.SetConfigType(ext)
 	}

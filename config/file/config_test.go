@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spf13/viper"
+	"gitee.com/marcellos/wyi-common/config"
 )
 
 func TestNew(t *testing.T) {
 
 	var (
-		c   *viper.Viper
+		c   *config.Config
 		err error
 	)
 
-	c, err = New("H:/tmp/config.yaml", func() {
+	c, err = New("config.yaml", func() {
 		fmt.Println(c.GetString("redis.password"))
 	})
 	if err != nil {

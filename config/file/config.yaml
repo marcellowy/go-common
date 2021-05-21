@@ -1,0 +1,3 @@
+redis:
+  password: 123
+debug: true

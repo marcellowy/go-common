@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"gitee.com/marcellos/wyi-common/config"
+
 	"gitee.com/marcellos/wyi-common/base"
 
 	"gitee.com/marcellos/wyi-common/crypto"
@@ -12,12 +14,10 @@ import (
 	"github.com/fsnotify/fsnotify"
 
 	"gitee.com/marcellos/wyi-common/config/internal"
-
-	"github.com/spf13/viper"
 )
 
 // New 从文件初始化配置
-func New(file string, cb func()) (*viper.Viper, error) {
+func New(file string, cb func()) (*config.Config, error) {
 
 	var (
 		dir           = filepath.Dir(file)
@@ -40,7 +40,7 @@ func New(file string, cb func()) (*viper.Viper, error) {
 		return nil, fmt.Errorf("configuration file are not supported")
 	}
 
-	v := viper.New()
+	v := config.New()
 	{
 		v.SetConfigName(f[0])
 		v.AddConfigPath(dir)
