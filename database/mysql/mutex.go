@@ -20,12 +20,12 @@ const defaultTimeout = time.Second * 3
 
 // Mutex 数据库锁
 type Mutex struct {
-	tx    *sql.Tx // 数据库连接
-	table string  // key
+	tx    **sql.Tx // 数据库连接
+	table string   // key
 }
 
 // NewMutex 实例化一个数据库锁
-func NewMutex(tx *sql.Tx, table string) *Mutex {
+func NewMutex(tx **sql.Tx, table string) *Mutex {
 	return &Mutex{
 		table: table,
 		tx:    tx,
@@ -39,12 +39,12 @@ func (m *Mutex) Lock(key string, expires time.Duration) error {
 	var s = "SELECT id FROM " + m.table + " WHERE key=? FOR UPDATE NO WAIT"
 	ctx, cancel := context.WithTimeout(context.Background(), expires)
 	defer cancel()
-	_, err := m.tx.QueryContext(ctx, s, key)
+	_, err := (*m.tx).QueryContext(ctx, s, key)
 	return err
 }
 
 // Unlock 释放锁
 func (m *Mutex) Unlock() error {
 	// 提交或者回滚可以释放这个锁
-	return m.tx.Rollback()
+	return (*m.tx).Rollback()
 }
