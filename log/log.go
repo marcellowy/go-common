@@ -42,7 +42,16 @@ func WithStdout() Options {
 
 // NewConfig 实例化日志配置
 func NewConfig(options ...Options) *Config {
-	var c = Config{
+	for _, opt := range options {
+		opt(defaultConfig)
+	}
+	return defaultConfig
+}
+
+var (
+	// Logger 日志实例
+	Logger        *zap.Logger
+	defaultConfig = &Config{
 		Filename:             getExecuteName(),
 		RollingLogMaxSize:    1024 * 2,
 		RollingLogMaxBackups: 10,
@@ -52,23 +61,13 @@ func NewConfig(options ...Options) *Config {
 		Level:                zap.DebugLevel,
 		StdOut:               false,
 	}
-	for _, opt := range options {
-		opt(&c)
-	}
-	return &c
-}
-
-var (
-	// Logger 日志实例
-	Logger        *zap.Logger
-	defaultConfig = &Config{}
 )
 
 func init() {
-	initLog(defaultConfig)
+	InitLog(defaultConfig)
 }
 
-func initLog(config *Config) {
+func InitLog(config *Config) {
 
 	hook := lumberjack.Logger{
 		Filename:   config.Filename,
@@ -80,7 +79,7 @@ func initLog(config *Config) {
 
 	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
 	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= defaultConfig.Level
+		return lvl >= config.Level
 	})
 
 	var writeSyncer = []zapcore.WriteSyncer{
