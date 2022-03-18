@@ -21,13 +21,28 @@ type Config struct {
 	LastLog              func(ctx context.Context) []zap.Field
 	Level                zapcore.Level
 	StdOut               bool
-	FileOut              bool
 }
 
-var (
-	// Logger 日志实例
-	Logger        *zap.Logger
-	defaultConfig = &Config{
+// Options 配置选项
+type Options func(config *Config)
+
+// WithOutput 输出文件
+func WithOutput(filename string) Options {
+	return func(config *Config) {
+		config.Filename = filename
+	}
+}
+
+// WithStdout 标准输出
+func WithStdout() Options {
+	return func(config *Config) {
+		config.StdOut = true
+	}
+}
+
+// NewConfig 实例化日志配置
+func NewConfig(options ...Options) *Config {
+	var c = Config{
 		Filename:             getExecuteName(),
 		RollingLogMaxSize:    1024 * 2,
 		RollingLogMaxBackups: 10,
@@ -36,8 +51,17 @@ var (
 		LastLog:              nil,
 		Level:                zap.DebugLevel,
 		StdOut:               false,
-		FileOut:              true,
 	}
+	for _, opt := range options {
+		opt(&c)
+	}
+	return &c
+}
+
+var (
+	// Logger 日志实例
+	Logger        *zap.Logger
+	defaultConfig = &Config{}
 )
 
 func init() {
@@ -59,15 +83,13 @@ func initLog(config *Config) {
 		return lvl >= defaultConfig.Level
 	})
 
-	var writeSyncer []zapcore.WriteSyncer
+	var writeSyncer = []zapcore.WriteSyncer{
+		zapcore.AddSync(&hook),
+	}
 
 	if defaultConfig.StdOut {
 		// 同时打印到标准输出
 		writeSyncer = append(writeSyncer, zapcore.AddSync(os.Stdout))
-	}
-
-	if defaultConfig.FileOut {
-		writeSyncer = append(writeSyncer, zapcore.AddSync(&hook))
 	}
 
 	multiWriter := zapcore.NewMultiWriteSyncer(writeSyncer...)
@@ -90,26 +112,6 @@ func getExecuteName() string {
 	paths := strings.Split(path, "/")
 	path = paths[len(paths)-1]
 	return path + ".log"
-}
-
-// SetLogConfig 设置日志配置
-func SetLogConfig(config *Config) {
-	if config.Filename != "" {
-		defaultConfig.Filename = config.Filename
-	}
-	if config.RollingLogMaxSize > 0 {
-		defaultConfig.RollingLogMaxSize = config.RollingLogMaxSize
-	}
-	if config.RollingLogMaxAge > 0 {
-		defaultConfig.RollingLogMaxAge = config.RollingLogMaxAge
-	}
-	if config.RollingLogMaxBackups > 0 {
-		defaultConfig.RollingLogMaxBackups = config.RollingLogMaxBackups
-	}
-	if config.LastLog != nil {
-		defaultConfig.LastLog = config.LastLog
-	}
-	initLog(defaultConfig)
 }
 
 func lastLog(ctx context.Context, f func(ctx context.Context) []zap.Field) []zap.Field {
