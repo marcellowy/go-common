@@ -10,7 +10,7 @@ const key = "common_header"
 // Header 公共头
 type Header struct {
 	TraceID string `json:"trace_id"`
-	Version int    `json:"version"` // 头版本,主要用于序列化
+	Version int    `json:"version"` // 头版本
 }
 
 func (h *Header) Marshal() ([]byte, error) {

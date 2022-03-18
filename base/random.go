@@ -55,7 +55,7 @@ func init() {
 }
 
 // RandomString 随机字符串
-func RandomString(length uint, contain int) string {
+func RandomString(length uint, contain type_) string {
 
 	var (
 		result string
@@ -64,7 +64,7 @@ func RandomString(length uint, contain int) string {
 	)
 
 	for _, v := range types {
-		if int(v)&contain > 0 {
+		if v&contain > 0 {
 			r = append(r, typesValue[v]...)
 		}
 	}

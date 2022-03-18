@@ -7,7 +7,7 @@ type Config struct {
 	*viper.Viper
 }
 
-// NewConfig 实例化配置
+// New 实例化配置
 func New() *Config {
 	return &Config{
 		viper.New(),
