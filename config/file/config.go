@@ -5,15 +5,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gitee.com/marcellos/wyi-common/config"
+	"gitee.com/marcellos/common/config"
 
-	"gitee.com/marcellos/wyi-common/base"
+	"gitee.com/marcellos/common/base"
 
-	"gitee.com/marcellos/wyi-common/crypto"
+	"gitee.com/marcellos/common/crypto"
 
 	"github.com/fsnotify/fsnotify"
 
-	"gitee.com/marcellos/wyi-common/config/internal"
+	"gitee.com/marcellos/common/config/internal"
 )
 
 // New 从文件初始化配置

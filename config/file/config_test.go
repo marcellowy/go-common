@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gitee.com/marcellos/wyi-common/config"
+	"gitee.com/marcellos/common/config"
 )
 
 func TestNew(t *testing.T) {

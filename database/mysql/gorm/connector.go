@@ -11,7 +11,7 @@ import (
 	"io"
 	"sync"
 
-	"gitee.com/marcellos/wyi-common/database/mysql"
+	"gitee.com/marcellos/common/database/mysql"
 	driver "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

@@ -7,7 +7,7 @@ import (
 
 	driver "gorm.io/driver/mysql"
 
-	"gitee.com/marcellos/wyi-common/database/mysql"
+	"gitee.com/marcellos/common/database/mysql"
 )
 
 // TestNewConnector

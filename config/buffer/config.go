@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"gitee.com/marcellos/wyi-common/config"
+	"gitee.com/marcellos/common/config"
 
-	"gitee.com/marcellos/wyi-common/config/internal"
+	"gitee.com/marcellos/common/config/internal"
 )
 
 // New 从buffer实例化配置
