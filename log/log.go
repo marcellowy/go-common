@@ -21,6 +21,7 @@ type Config struct {
 	LastLog              func(ctx context.Context) []zap.Field
 	Level                zapcore.Level
 	StdOut               bool
+	FileOut              bool
 }
 
 var (
@@ -35,6 +36,7 @@ var (
 		LastLog:              nil,
 		Level:                zap.DebugLevel,
 		StdOut:               false,
+		FileOut:              true,
 	}
 )
 
@@ -57,13 +59,15 @@ func initLog(config *Config) {
 		return lvl >= defaultConfig.Level
 	})
 
-	var writeSyncer = []zapcore.WriteSyncer{
-		zapcore.AddSync(&hook),
-	}
+	var writeSyncer []zapcore.WriteSyncer
 
 	if defaultConfig.StdOut {
 		// 同时打印到标准输出
 		writeSyncer = append(writeSyncer, zapcore.AddSync(os.Stdout))
+	}
+
+	if defaultConfig.FileOut {
+		writeSyncer = append(writeSyncer, zapcore.AddSync(&hook))
 	}
 
 	multiWriter := zapcore.NewMultiWriteSyncer(writeSyncer...)
