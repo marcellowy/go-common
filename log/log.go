@@ -2,7 +2,6 @@ package log
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"runtime"
 	"strings"
@@ -20,6 +19,8 @@ type Config struct {
 	RollingLogMaxAge     int
 	Compress             bool
 	LastLog              func(ctx context.Context) []zap.Field
+	Level                zapcore.Level
+	StdOut               bool
 }
 
 var (
@@ -32,6 +33,8 @@ var (
 		RollingLogMaxAge:     7,
 		Compress:             false,
 		LastLog:              nil,
+		Level:                zap.DebugLevel,
+		StdOut:               false,
 	}
 )
 
@@ -51,11 +54,22 @@ func initLog(config *Config) {
 
 	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
 	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.DebugLevel
+		return lvl >= defaultConfig.Level
 	})
 
-	multiWriter := zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook))
-	Logger = zap.New(zapcore.NewTee(zapcore.NewCore(consoleEncoder, multiWriter, highPriority))).
+	var writeSyncer = []zapcore.WriteSyncer{
+		zapcore.AddSync(&hook),
+	}
+
+	if defaultConfig.StdOut {
+		// 同时打印到标准输出
+		writeSyncer = append(writeSyncer, zapcore.AddSync(os.Stdout))
+	}
+
+	multiWriter := zapcore.NewMultiWriteSyncer(writeSyncer...)
+	Logger = zap.New(
+		zapcore.NewTee(zapcore.NewCore(consoleEncoder, multiWriter, highPriority)),
+	).
 		WithOptions(zap.AddCaller()).
 		WithOptions(zap.AddCallerSkip(1))
 }
@@ -94,15 +108,6 @@ func SetLogConfig(config *Config) {
 	initLog(defaultConfig)
 }
 
-// connectArgs 将要打印的参数连接起来
-func connectArgs(args ...interface{}) string {
-	var f string
-	for range args {
-		f += "%v "
-	}
-	return fmt.Sprintf(f, args...)
-}
-
 func lastLog(ctx context.Context, f func(ctx context.Context) []zap.Field) []zap.Field {
 	if f != nil {
 		return f(ctx)
@@ -110,34 +115,22 @@ func lastLog(ctx context.Context, f func(ctx context.Context) []zap.Field) []zap
 	return nil
 }
 
-func Debug(ctx context.Context, args ...interface{}) {
-	Logger.Debug(connectArgs(args...), lastLog(ctx, defaultConfig.LastLog)...)
+// Debug Debug日志
+func Debug(ctx context.Context, msg string) {
+	Logger.Debug(msg, lastLog(ctx, defaultConfig.LastLog)...)
 }
 
-func Debugf(ctx context.Context, format string, args ...interface{}) {
-	Logger.Debug(fmt.Sprintf(format, args...), lastLog(ctx, defaultConfig.LastLog)...)
+// Info 信息日志
+func Info(ctx context.Context, msg string) {
+	Logger.Info(msg, lastLog(ctx, defaultConfig.LastLog)...)
 }
 
-func Info(ctx context.Context, args ...interface{}) {
-	Logger.Info(connectArgs(args...), lastLog(ctx, defaultConfig.LastLog)...)
+// Warn 警告日志
+func Warn(ctx context.Context, msg string) {
+	Logger.Warn(msg, lastLog(ctx, defaultConfig.LastLog)...)
 }
 
-func Infof(ctx context.Context, format string, args ...interface{}) {
-	Logger.Info(fmt.Sprintf(format, args...), lastLog(ctx, defaultConfig.LastLog)...)
-}
-
-func Warn(ctx context.Context, args ...interface{}) {
-	Logger.Warn(connectArgs(args...), lastLog(ctx, defaultConfig.LastLog)...)
-}
-
-func Warnf(ctx context.Context, format string, args ...interface{}) {
-	Logger.Warn(fmt.Sprintf(format, args...), lastLog(ctx, defaultConfig.LastLog)...)
-}
-
-func Error(ctx context.Context, args ...interface{}) {
-	Logger.Error(connectArgs(args...), lastLog(ctx, defaultConfig.LastLog)...)
-}
-
-func Errorf(ctx context.Context, format string, args ...interface{}) {
-	Logger.Error(fmt.Sprintf(format, args...), lastLog(ctx, defaultConfig.LastLog)...)
+// Error 错误日志
+func Error(ctx context.Context, msg string) {
+	Logger.Error(msg, lastLog(ctx, defaultConfig.LastLog)...)
 }
