@@ -1,4 +1,4 @@
-module gitee.com/marcellos/wyi-common
+module gitee.com/marcellos/common
 
 go 1.14
 
