@@ -1,4 +1,4 @@
-package base
+package tools
 
 // IsNumber 判断一个字符串是不是全都是数字
 func IsNumber(s string) bool {

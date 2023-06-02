@@ -1,4 +1,4 @@
-package base
+package tools
 
 // RemoveSameFromStringSlice 移除 []string 中的相同元素
 func RemoveSameFromStringSlice(slice []string) []string {

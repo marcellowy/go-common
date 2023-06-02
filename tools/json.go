@@ -4,7 +4,6 @@ package tools
 
 import (
 	"encoding/json"
-	"gitlab.vrviu.com/inviu/engine/go-common.git/consts"
 )
 
 // JSONMarshalString 忽略错误，返回JSON.Marshal后的string
@@ -20,7 +19,7 @@ func JSONMarshalString(v interface{}) string {
 func JSONMarshalByte(v interface{}) []byte {
 	var b, err = json.Marshal(v)
 	if err != nil {
-		return consts.EmptyByteArr
+		return []byte("")
 	}
 	return b
 }
