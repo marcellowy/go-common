@@ -3,83 +3,129 @@
 package tools
 
 import (
-	"math/rand"
 	"time"
+	"unsafe"
 )
 
-var ra *rand.Rand
-
-// Contain 随机字符串
-type type_ int
+// randomType 随机类型
+type randomType int
 
 const (
-	RandomLowercase type_ = 1 // 小写字母
-	RandomMajuscule       = 2 // 大写字母
-	RandomNumber          = 4 // 数字
-	RandomSymbol          = 8 // 符号
-	RandomAll             = RandomLowercase | RandomMajuscule | RandomNumber | RandomSymbol
+	// RandomLowercase lowercase
+	RandomLowercase randomType = 2 << iota
+	// RandomMajuscule majuscule
+	RandomMajuscule
+	// RandomDigital digital
+	RandomDigital
+	// RandomSymbol symbol
+	RandomSymbol
+	// RandomAll all
+	RandomAll = RandomLowercase | RandomMajuscule | RandomDigital | RandomSymbol
 )
 
-var types = []type_{RandomLowercase, RandomMajuscule, RandomNumber, RandomSymbol}
+// randomCharMaxLength all char length
+const randomCharMaxLength = 69
 
-var typesValue = map[type_][]byte{
-	RandomLowercase: lowercase,
-	RandomMajuscule: majuscule,
-	RandomNumber:    number,
-	RandomSymbol:    symbol,
+// randomLowercase lowercase
+var randomLowercase = []byte{
+	0x61, 0x62, 0x63, 0x64, 0x65,
+	0x66, 0x67, 0x68, 0x69, 0x6A,
+	0x6B, 0x6D, 0x6E, 0x70, 0x71,
+	0x72, 0x73, 0x74, 0x75, 0x76,
+	0x77, 0x78, 0x79, 0x7A,
 }
 
-// lowercase 小写字母
-var lowercase = []byte{
-	0x61, 0x62, 0x63, 0x64, 0x65, 0x66,
-	0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6D,
-	0x6E, 0x70, 0x71, 0x72, 0x73, 0x74,
-	0x75, 0x76, 0x77, 0x78, 0x79, 0x7A,
+// randomLowercaseLength randomLowercase length
+const randomLowercaseLength = 24
+
+// randomMajuscule majuscule
+var randomMajuscule = []byte{
+	0x41, 0x42, 0x43, 0x44, 0x45,
+	0x46, 0x47, 0x48, 0x49, 0x4A,
+	0x4B, 0x4D, 0x4E, 0x50, 0x51,
+	0x52, 0x53, 0x54, 0x55, 0x56,
+	0x57, 0x58, 0x59, 0x5A,
 }
 
-// majuscule 大写字母
-var majuscule = []byte{
-	0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
-	0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4D,
-	0x4E, 0x50, 0x51, 0x52, 0x53, 0x54,
-	0x55, 0x56, 0x57, 0x58, 0x59, 0x5A,
+// randomMajusculeLength randomMajuscule length
+const randomMajusculeLength = 24
+
+// randomDigital digital
+var randomDigital = []byte{
+	'9', '2', '3', '4', '5',
+	'6', '7', '8',
 }
 
-// number 数字
-var number = []byte{'2', '3', '4', '5', '6', '7', '8', '9'}
+// randomDigitalLength randomDigital length
+const randomDigitalLength = 8
 
-// symbol 符号
-var symbol = []byte{'!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+'}
-
-// init 初始化
-func init() {
-	ra = rand.New(rand.NewSource(time.Now().UnixNano()))
+// randomSymbol symbol
+var randomSymbol = []byte{
+	'!', '@', '#', '$', '%',
+	'^', '&', '*', '(', ')',
+	'_', '-', '+',
 }
 
-// RandomStr 随机字符串
-func RandomStr(length uint, contain type_) string {
+// randomSymbolLength randomSymbol length
+const randomSymbolLength = 13
+
+// RandomString random a string
+func RandomString(length uint, charType randomType) (s string) {
 
 	var (
-		result string
-		r, t   []byte
-		i      uint
+		randChar   = make([]byte, randomCharMaxLength)
+		strChar    = make([]byte, length)
+		randLength uint32
 	)
 
-	for _, v := range types {
-		if v&contain > 0 {
-			r = append(r, typesValue[v]...)
-		}
+	if charType&RandomLowercase > 0 {
+		copy(randChar[randLength:], randomLowercase)
+		randLength += randomLowercaseLength
+	}
+	if charType&RandomMajuscule > 0 {
+		copy(randChar[randLength:], randomMajuscule)
+		randLength += randomMajusculeLength
+	}
+	if charType&RandomSymbol > 0 {
+		copy(randChar[randLength:], randomSymbol)
+		randLength += randomSymbolLength
+	}
+	if charType&RandomDigital > 0 {
+		copy(randChar[randLength:], randomDigital)
+		randLength += randomDigitalLength
 	}
 
-	if len(r) == 0 {
-		return ""
-	}
+	var i uint
 
-	var l = len(r)
+	rdm := &random{}
+	nn := randLength - 1
 	for i = 0; i < length; i++ {
-		t = append(t, r[ra.Intn(l-1)])
+		strChar[i] = randChar[rdm.Uint32n(nn)]
 	}
-	result = string(t)
+	return *(*string)(unsafe.Pointer(&strChar))
+}
 
-	return result
+type random struct {
+	seed uint32
+}
+
+func (r *random) Uint32() uint32 {
+	for r.seed == 0 {
+		x := time.Now().UnixNano()
+		r.seed = uint32((x >> 32) ^ x)
+	}
+
+	// See https://en.wikipedia.org/wiki/Xorshift
+	randomNum := r.seed
+	randomNum ^= randomNum << 13
+	randomNum ^= randomNum >> 17
+	randomNum ^= randomNum << 5
+	r.seed = randomNum
+	return randomNum
+}
+
+func (r *random) Uint32n(maxN uint32) uint32 {
+	x := r.Uint32()
+	// See http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
+	return uint32((uint64(x) * uint64(maxN)) >> 32)
 }
