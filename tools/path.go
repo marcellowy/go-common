@@ -1,13 +1,14 @@
+// Package tools
+// Copyright 2023 marcello<volibearw@gmail.com>. All rights reserved.
 package tools
 
 import (
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
-// PathExists 判断目录或者文件是否存在
+// PathExists check path
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -19,17 +20,17 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-// GetCurrentDirectory 返回工作目录
+// GetCurrentDirectory return current work directory
 func GetCurrentDirectory() string {
 
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0])) //返回绝对路径  filepath.Dir(os.Args[0])去除最后一个元素的路径
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		return ""
 	}
 
-	if runtime.GOOS == "windows" {
-		// 只有windows需要替换
-		return strings.Replace(dir, "\\", "/", -1) //将\替换成/
+	if IsWindows() {
+		// only windows replace
+		return strings.Replace(dir, "\\", "/", -1) // use / replace \\
 	}
 	return dir
 }

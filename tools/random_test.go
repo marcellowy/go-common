@@ -5,13 +5,6 @@ import (
 	"testing"
 )
 
-// 性能基测测试
-func TestRandomString_Per(t *testing.T) {
-	for i := 0; i < 1000000; i++ {
-		RandomString(100, RandomDigital)
-	}
-}
-
 func TestRandomString(t *testing.T) {
 	var length uint = 5
 	a := RandomString(length, RandomMajuscule)

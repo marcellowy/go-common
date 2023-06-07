@@ -1,5 +1,5 @@
 // Package tools
-// Copyright 2016-2023 chad.wang<chad.wang@icloudsky.com>. All rights reserved.
+// Copyright 2023 marcello<volibearw@gmail.com>. All rights reserved.
 package tools
 
 import "runtime"
@@ -8,7 +8,7 @@ import "runtime"
 // const goosList = "android darwin dragonfly freebsd linux nacl \
 // netbsd openbsd plan9 solaris windows "
 
-// IsWindows 判断是不是windows
+// IsWindows check system windows
 func IsWindows() bool {
 	if runtime.GOOS == "windows" {
 		return true
@@ -16,7 +16,7 @@ func IsWindows() bool {
 	return false
 }
 
-// IsDarwin 判断是不是Mac
+// IsDarwin  check system mac
 func IsDarwin() bool {
 	if runtime.GOOS == "darwin" {
 		return true
@@ -24,7 +24,7 @@ func IsDarwin() bool {
 	return false
 }
 
-// IsLinux 判断是否linux系统
+// IsLinux  check system linux
 func IsLinux() bool {
 	if runtime.GOOS == "linux" {
 		return true

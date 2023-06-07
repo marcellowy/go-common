@@ -1,26 +1,26 @@
 // Package tools
-// Copyright 2016-2023 chad.wang<chad.wang@icloudsky.com>. All rights reserved.
+// Copyright 2023 marcello<volibearw@gmail.com>. All rights reserved.
 package tools
 
-// PaginationData 分页结果数据
+// PaginationData pagination data
 type PaginationData struct {
-	Total        int64   // 总记录数
-	Page         int64   // 第几页
-	PageSize     int64   // 每页显示多少条记录
-	PageNums     int64   // 显示多少个数字
-	FirstPage    int64   // 第一页
-	LastPage     int64   // 最后一页
-	PreviousPage int64   // 上一页,没有上一页时为 0
-	NextPage     int64   // 下一页,没有下一页时为 0
-	TotalPage    int64   // 总页数
-	Pages        []int64 // 分页页码
+	Total        int64   // total record
+	Page         int64   // current page
+	PageSize     int64   // show size every page
+	PageNums     int64   // show digital numbers on page
+	FirstPage    int64   // first page
+	LastPage     int64   // last page
+	PreviousPage int64   // previous page
+	NextPage     int64   // next page
+	TotalPage    int64   // total page
+	Pages        []int64 // pages
 }
 
-// Pagination 分页组件
-// count 记录总数
-// page 当前页, 如果小于1会修正为1
-// pageSize 每一页显示量,如果小于1会修正为1
-// pagesNum 分页时中间显示多少个数字,如果小于1，会修正为1
+// Pagination calculate
+// total record
+// page  current page
+// pageSize show size every page
+// pagesNum show digital numbers on page
 func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData) {
 
 	pg = &PaginationData{
@@ -54,42 +54,42 @@ func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData)
 	}
 
 	if pg.PageNums > pg.TotalPage {
-		// 显示的页数超过最大页数，进行修正
+		// max not than total page
 		pg.PageNums = pg.TotalPage
 	}
 
 	if page > pg.TotalPage {
-		// 当前页超过最大页，进行修正
+		// max not than total page
 		page = pg.TotalPage
 	}
 
-	// 上一页
+	// previous page
 	pg.PreviousPage = page - 1
-	if pg.PreviousPage < 0 { // 最小页数不能是负值
+	if pg.PreviousPage < 0 {
 		pg.PreviousPage = 0
 	}
 
-	// 下一页
+	// next page
 	pg.NextPage = page + 1
-	if pg.NextPage > pg.TotalPage { // 下一页页数不能超过总页数
+	if pg.NextPage > pg.TotalPage { // next page max value is total page
 		pg.NextPage = 0
 	}
 
-	if pg.PageNums > pg.TotalPage { // 如果页数比总页数还大，下半部分计算会出错
+	if pg.PageNums > pg.TotalPage { // if page > total page, then page = total page
 		pg.PageNums = pg.TotalPage
 	}
 
-	// 判断一下奇偶
+	// check even or odd
 	var halfPagesNum int64
 	if pg.PageNums%2 == 0 {
-		// 偶
+		// even
 		halfPagesNum = pg.PageNums / 2
 	} else {
-		// 寄
+		// odd
 		halfPagesNum = pg.PageNums/2 + 1
 	}
 
-	// 页码前半部分
+	// the part 1
 	var i int64
 	for i = halfPagesNum; i > 0; i-- {
 		var p = page - i
@@ -99,7 +99,7 @@ func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData)
 		pg.Pages = append(pg.Pages, p)
 	}
 
-	// 页码后半部分
+	// the part 2
 	var n int64
 	var maxN = pg.PageNums - int64(len(pg.Pages))
 	for n = 0; n < maxN; n++ {

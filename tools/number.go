@@ -1,6 +1,8 @@
+// Package tools
+// Copyright 2023 marcello<volibearw@gmail.com>. All rights reserved.
 package tools
 
-// IsNumber 判断一个字符串是不是全都是数字
+// IsNumber check string is number?
 func IsNumber(s string) bool {
 
 	if s == "" {

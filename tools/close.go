@@ -4,7 +4,7 @@ package tools
 
 import "io"
 
-// Close 快捷关闭
+// Close fast ptr close
 func Close(f io.Closer) {
 	_ = f.Close()
 }

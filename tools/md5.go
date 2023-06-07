@@ -1,5 +1,5 @@
 // Package tools
-// Copyright 2016-2023 chad.wang<chad.wang@icloudsky.com>. All rights reserved.
+// Copyright 2023 marcello<volibearw@gmail.com>. All rights reserved.
 package tools
 
 import (
@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-// Md5 计算md5值
+// Md5 calculator md5 string
 func Md5(s string) string {
 	if s == "" {
 		return ""
@@ -19,7 +19,7 @@ func Md5(s string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
-// Md5File 计算文件md5
+// Md5File calculator file md5 string
 func Md5File(filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {

@@ -2,8 +2,8 @@ package log
 
 import (
 	"context"
+	"github.com/marcellowy/go-common/tools"
 	"os"
-	"runtime"
 	"strings"
 
 	"go.uber.org/zap"
@@ -102,7 +102,7 @@ func InitLog(config *Config) {
 // getExecuteName 获取当前运行时的文件名
 func getExecuteName() string {
 	var path = os.Args[0]
-	if runtime.GOOS == "windows" {
+	if tools.IsWindows() {
 		path = strings.ReplaceAll(path, "\\", "/")
 		if len(path) > 4 && path[len(path)-4:] == ".exe" {
 			path = path[:len(path)-4]

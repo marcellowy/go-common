@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-// JSONMarshalString 忽略错误，返回JSON.Marshal后的string
+// JSONMarshalString ignore error，return JSON.Marshal string
 func JSONMarshalString(v interface{}) string {
 	var b, err = json.Marshal(v)
 	if err != nil {
@@ -15,7 +15,7 @@ func JSONMarshalString(v interface{}) string {
 	return string(b)
 }
 
-// JSONMarshalByte 忽略错误，返回JSON.Marshal后的[]byte
+// JSONMarshalByte ignore error, return JSON.Marshal []byte()
 func JSONMarshalByte(v interface{}) []byte {
 	var b, err = json.Marshal(v)
 	if err != nil {
