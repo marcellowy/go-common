@@ -3,12 +3,11 @@
 package tools
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestRemoveSameFromStringSlice(t *testing.T) {
-	fmt.Println(RemoveSameFromStringSlice([]string{"1", "1", "2", "2", "3"}))
+	RemoveSameFromStringSlice([]string{"1", "1", "2", "2", "3"})
 }
 
 func TestSliceTrimSame(t *testing.T) {
@@ -17,5 +16,5 @@ func TestSliceTrimSame(t *testing.T) {
 }
 
 func TestSliceRemove(t *testing.T) {
-	fmt.Println(SliceRemove([]string{"1"}, []string{"1", "1", "2", "2", "3", "4", "4"}))
+	SliceRemove([]string{"1"}, []string{"1", "1", "2", "2", "3", "4", "4"})
 }
