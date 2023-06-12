@@ -10,6 +10,7 @@ import (
 	"github.com/marcellowy/go-common/config"
 	"github.com/marcellowy/go-common/log"
 	"github.com/marcellowy/go-common/tools"
+	"go.uber.org/zap/zapcore"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -53,10 +54,15 @@ func Connect(ctx context.Context, c Config) *gorm.DB {
 		err error
 	)
 
+	gc := gorm.Config{}
+	if l, e := zapcore.ParseLevel(config.GetString("logger.level")); e == nil && l < zapcore.ErrorLevel {
+		gc.Logger = log.NewGormLog()
+	}
+
 	// Connect db
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		c.User, c.Password, c.Host, c.Port, c.Name)
-	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
+	if db, err = gorm.Open(mysql.Open(dsn), &gc); err != nil {
 		panic(err)
 	}
 

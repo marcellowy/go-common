@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	defaultServerStopWaitDuration = 500 * time.Millisecond
+	defaultServerStopWait = 500 * time.Millisecond
 )
 
 func init() {
 	if v := config.GetInt64("server.stopWaitMillisecond"); v > 0 {
-		defaultServerStopWaitDuration = time.Millisecond * time.Duration(v)
+		defaultServerStopWait = time.Millisecond * time.Duration(v)
 	}
 }
 
@@ -62,7 +62,7 @@ exit:
 }
 
 func (s *Server) waitStop() {
-	ctx, cancel := context.WithTimeout(context.TODO(), defaultServerStopWaitDuration)
+	ctx, cancel := context.WithTimeout(context.TODO(), defaultServerStopWait)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {
 		panic(err)

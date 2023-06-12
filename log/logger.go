@@ -67,7 +67,7 @@ func init() {
 		WithOptions(zap.AddCallerSkip(1))
 }
 
-func readTraceId(ctx context.Context) string {
+func ReadTraceId(ctx context.Context) string {
 	value := ctx.Value(defaultTraceKey)
 	if value == nil {
 		return ""
@@ -100,43 +100,39 @@ func toString(msg ...any) string {
 	return fmt.Sprintf(token, msg...)
 }
 
-func toStringf(s string, v ...any) string {
-	return fmt.Sprintf(s, v...)
-}
-
 func AddTraceId(ctx context.Context) context.Context {
 	return context.WithValue(ctx, defaultTraceKey, "")
 }
 
 func Debug(ctx context.Context, msg ...any) {
-	logger.Debug(toString(msg...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Debug(toString(msg...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 
 func Info(ctx context.Context, msg ...any) {
-	logger.Info(toString(msg...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Info(toString(msg...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Warn(ctx context.Context, msg ...any) {
-	logger.Warn(toString(msg...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Warn(toString(msg...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Error(ctx context.Context, msg ...any) {
-	logger.Error(toString(msg...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Error(toString(msg...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Fatal(ctx context.Context, msg ...any) {
-	logger.Fatal(toString(msg...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Fatal(toString(msg...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 
 func Debugf(ctx context.Context, msg string, v ...any) {
-	logger.Debug(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Debug(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Infof(ctx context.Context, msg string, v ...any) {
-	logger.Info(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Info(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Warnf(ctx context.Context, msg string, v ...any) {
-	logger.Warn(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Warn(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Errorf(ctx context.Context, msg string, v ...any) {
-	logger.Error(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Error(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
 func Fatalf(ctx context.Context, msg string, v ...any) {
-	logger.Fatal(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, readTraceId(ctx)))
+	logger.Fatal(fmt.Sprintf(msg, v...), zap.String(defaultTraceName, ReadTraceId(ctx)))
 }
