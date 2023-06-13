@@ -29,6 +29,8 @@ var supportMethod = map[string]string{
 // routerCache METHOD PATH cache one function
 var routerCache map[string]map[string]cache
 
+var responseMarshal Response
+
 // cache object
 type cache struct {
 	controllerInstance reflect.Value
@@ -42,8 +44,21 @@ type cache struct {
 type Meta struct {
 }
 
+type Error interface {
+	ToJSON() []byte
+}
+
+type Response interface {
+	// Marshal input is response struct
+	Marshal(interface{}) interface{}
+}
+
 func init() {
 	routerCache = make(map[string]map[string]cache)
+}
+
+func ResponseMarshal(response Response) {
+	responseMarshal = response
 }
 
 // Register router register
@@ -143,8 +158,8 @@ func router(ctx *gin.Context) {
 	})
 
 	if !response[1].IsNil() {
-		var merror *merr.Error
-		if merror, ok = response[1].Interface().(*merr.Error); ok {
+		var merror Error
+		if merror, ok = response[1].Interface().(Error); ok {
 			if _, err = ctx.Writer.Write(merror.ToJSON()); err != nil {
 				panic(err)
 			}
@@ -160,7 +175,13 @@ func router(ctx *gin.Context) {
 	}
 
 	mime := c.responseMeta.Tag.Get("mime")
-	body := merr.NewCode(0, "success", response[0].Elem().Interface())
+	var body interface{}
+	if responseMarshal == nil {
+		body = merr.NewCode(0, "success", response[0].Elem().Interface())
+	} else {
+		body = responseMarshal.Marshal(response[0].Elem().Interface())
+	}
+
 	switch mime {
 	case defaultMimeJSON:
 		if b, err = json.Marshal(body); err != nil {
