@@ -33,17 +33,22 @@ func main() {
 ```
 
 ### version
-#### v0.0.3(pre-release)
-1. add SliceTrimSame remove slice same element
-2. add SliceRemove remove slice specify element
-3. RemoveSameFromStringSlice Departed，use SliceTrimSame replace
-4. FormatTime use genericity 
+#### v0.0.5
+- add auto register router for gin framework, see router/README.md
+#### v0.0.4
+- add GormLogger help write gorm log to zap log
+- bugfix
+#### v0.0.3
+- add SliceTrimSame remove slice same element
+- add SliceRemove remove slice specify element
+- RemoveSameFromStringSlice Departed，use SliceTrimSame replace
+- FormatTime use genericity 
 
 #### v0.0.2
-1. add Close，close io.Closer
+- add Close，close io.Closer
 
 #### v0.0.1
-1. init version
+- init version
 
 ### LICENSE
 MIT
