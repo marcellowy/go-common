@@ -189,6 +189,7 @@ func router(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Println("writer.Size()", ctx.Writer.Size())
 	if ctx.Writer.Size() > 0 {
 		// write body in function
 		return
