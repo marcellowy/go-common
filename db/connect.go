@@ -15,6 +15,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// defaultConnectorName default connect connector name
+const defaultConnectorName = "default"
+
 var (
 	Connector *gorm.DB // default database
 )
@@ -82,7 +85,7 @@ func connectWithMap(ctx context.Context, cc dbConf) {
 		if _, ok := autoConnectInstance[key]; !ok {
 			autoConnectInstance[key] = Connect(ctx, cconf)
 		}
-		if key == "default" {
+		if key == defaultConnectorName {
 			Connector = autoConnectInstance[key]
 		}
 	}
