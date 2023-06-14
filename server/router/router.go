@@ -142,7 +142,7 @@ func register(engine gin.IRouter, relativePath string, handle interface{}) {
 			responseMeta:       responseField,
 		}
 		// register router to gin framework
-		fmt.Println(sMethod, cacheRequestPath)
+		//fmt.Println(sMethod, cacheRequestPath)
 		reflect.ValueOf(engine).MethodByName(sMethod).Call([]reflect.Value{
 			reflect.ValueOf(requestPath),
 			reflect.ValueOf(router),
