@@ -6,6 +6,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/marcellowy/go-common/config"
+	"github.com/marcellowy/go-common/consts"
+	"github.com/marcellowy/go-common/server/ginctx"
 	"github.com/marcellowy/go-common/tools"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -16,7 +18,6 @@ import (
 
 var (
 	defaultTraceName = "trace_id"
-	defaultTraceKey  = "gitee.com/marcellos/go-server/log"
 	logger           *zap.Logger
 )
 
@@ -68,14 +69,7 @@ func init() {
 }
 
 func ReadTraceId(ctx context.Context) string {
-	value := ctx.Value(defaultTraceKey)
-	if value == nil {
-		return ""
-	}
-	if v, ok := value.(string); ok {
-		return v
-	}
-	return ""
+	return ginctx.ReadTrace(ctx)
 }
 
 // getExecuteLogFilename 获取当前运行时的文件名
@@ -101,7 +95,7 @@ func toString(msg ...any) string {
 }
 
 func AddTraceId(ctx context.Context) context.Context {
-	return context.WithValue(ctx, defaultTraceKey, "")
+	return context.WithValue(ctx, consts.DefaultTraceKey, "")
 }
 
 func Debug(ctx context.Context, msg ...any) {
