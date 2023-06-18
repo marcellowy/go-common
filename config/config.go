@@ -8,14 +8,25 @@ import (
 	"time"
 )
 
+// defaultConfigName default config filename
 const defaultConfigName = "config"
+
+// defaultConfigPath default config file directory
 const defaultConfigPath = "manifests/config"
 
 // defaultConfig default
 var defaultConfig *Config
 
+// defaultConfigInit default config initial flag
+var defaultConfigInit bool
+
+// Config default instance
 type Config struct {
 	v *viper.Viper
+}
+
+func (c *Config) GetStringSlice(key string) []string {
+	return c.v.GetStringSlice(key)
 }
 
 func (c *Config) GetStringMap(key string) map[string]interface{} {
@@ -120,6 +131,10 @@ func readConfig(name string) *Config {
 		}
 	}
 	return nil
+}
+
+func GetStringSlice(key string) []string {
+	return defaultConfig.v.GetStringSlice(key)
 }
 
 func GetStringMap(key string) map[string]interface{} {

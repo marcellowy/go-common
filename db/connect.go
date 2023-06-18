@@ -19,6 +19,7 @@ import (
 const defaultConnectorName = "default"
 
 var (
+	// Connector default connector
 	Connector *gorm.DB // default database
 )
 
