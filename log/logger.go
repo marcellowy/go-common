@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -74,8 +75,8 @@ func ReadTraceId(ctx context.Context) string {
 
 // getExecuteLogFilename 获取当前运行时的文件名
 func getExecuteLogFilename() string {
-	var path = os.Args[0]
-	if tools.IsWindows() {
+	var path = filepath.ToSlash(os.Args[0])
+	if tools.IsWindows {
 		path = strings.ReplaceAll(path, "\\", "/")
 		if len(path) > 4 && path[len(path)-4:] == ".exe" {
 			path = path[:len(path)-4]

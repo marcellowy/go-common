@@ -18,7 +18,7 @@ const defaultConfigPath = "manifests/config"
 var defaultConfig *Config
 
 // defaultConfigInit default config initial flag
-var defaultConfigInit bool
+// var defaultConfigInit bool
 
 // Config default instance
 type Config struct {

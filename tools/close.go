@@ -5,6 +5,7 @@ package tools
 import "io"
 
 // Close fast ptr close
+// when use defer close, it's shortcut
 func Close(f io.Closer) {
 	_ = f.Close()
 }
