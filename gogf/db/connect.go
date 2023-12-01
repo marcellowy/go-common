@@ -20,14 +20,14 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 		charset      = "utf8mb4"
 		newCharset   = config.Get(key + ".charset")
 		parseTime    = "True"
-		newParseTime = config.Get(key + ".parseTime")
+		disableParseTime = config.Get(key + ".disableParseTime")
 	)
 
 	if !newCharset.IsEmpty() {
 		charset = newCharset.String()
 	}
 
-	if !newParseTime.Bool() {
+	if disableParseTime.Bool() {
 		parseTime = "False"
 	}
 
