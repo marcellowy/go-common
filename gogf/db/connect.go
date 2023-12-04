@@ -10,6 +10,7 @@ import (
 	"github.com/marcellowy/go-common/gogf/vlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"time"
 )
 
@@ -17,9 +18,9 @@ import (
 func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	var (
-		charset      = "utf8mb4"
-		newCharset   = config.Get(key + ".charset")
-		parseTime    = "True"
+		charset          = "utf8mb4"
+		newCharset       = config.Get(key + ".charset")
+		parseTime        = "True"
 		disableParseTime = config.Get(key + ".disableParseTime")
 	)
 
@@ -46,8 +47,13 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 	)
 
 	vlog.Debug(ctx, dsn)
+	var gConfig = &gorm.Config{}
+	if config.Get(key+".debug").Bool() == true {
+		vlog.Debug(ctx, "gorm debug open")
+		gConfig.Logger = logger.Default.LogMode(logger.Info)
+	}
 
-	if db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
+	if db, err = gorm.Open(mysql.Open(dsn), gConfig); err != nil {
 		vlog.Error(ctx, err)
 		return
 	}
