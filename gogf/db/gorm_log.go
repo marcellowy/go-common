@@ -1,10 +1,11 @@
-// Package log
+// Package db
 // Copyright 2016-2023 chad.wang<chad.wang@icloudsky.com>. All rights reserved.
-package log
+package db
 
 import (
 	"context"
 	"fmt"
+	"github.com/marcellowy/go-common/gogf/vlog"
 	gLogger "gorm.io/gorm/logger"
 	"time"
 )
@@ -19,18 +20,20 @@ func (gl GormLogger) LogMode(level gLogger.LogLevel) gLogger.Interface {
 }
 
 func (gl GormLogger) Info(ctx context.Context, s string, v ...interface{}) {
-	Infof(ctx, s, v...)
+	vlog.Infof(ctx, s, v...)
 }
 
 func (gl GormLogger) Warn(ctx context.Context, s string, v ...interface{}) {
-	Warnf(ctx, s, v...)
+	vlog.Warningf(ctx, s, v...)
 }
 
 func (gl GormLogger) Error(ctx context.Context, s string, v ...interface{}) {
-	Errorf(ctx, s, v...)
+	vlog.Errorf(ctx, s, v...)
 }
 
-func (gl GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
+func (gl GormLogger) Trace(ctx context.Context, begin time.Time,
+	fc func() (sql string, rowsAffected int64), err error) {
+
 	sql, _ := fc()
 	elapsed := time.Since(begin)
 
@@ -43,7 +46,7 @@ func (gl GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql 
 		// 慢查询
 		title = "SLOW SQL"
 	}
-	Infof(ctx, "%s: %s [%.3fms]", title, sql, float64(elapsed.Nanoseconds())/1e6)
+	vlog.Infof(ctx, "%s: %s [%.3fms]", title, sql, float64(elapsed.Nanoseconds())/1e6)
 }
 
 type GormLogOptions func(*GormLogger)
