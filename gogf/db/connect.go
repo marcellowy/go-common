@@ -10,7 +10,6 @@ import (
 	"github.com/marcellowy/go-common/gogf/vlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"time"
 )
 
@@ -50,7 +49,8 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 	var gConfig = &gorm.Config{}
 	if config.Get(key+".debug").Bool() == true {
 		vlog.Debug(ctx, "gorm debug open")
-		gConfig.Logger = logger.Default.LogMode(logger.Info)
+		//gConfig.Logger = logger.Default.LogMode(logger.Info)
+		gConfig.Logger = NewGormLog()
 	}
 
 	if db, err = gorm.Open(mysql.Open(dsn), gConfig); err != nil {
