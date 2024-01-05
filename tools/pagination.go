@@ -24,10 +24,11 @@ type PaginationData struct {
 func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData) {
 
 	pg = &PaginationData{
-		Total:    total,
-		Page:     page,
-		PageSize: pageSize,
-		PageNums: pageNum,
+		Total:     total,
+		Page:      page,
+		PageSize:  pageSize,
+		PageNums:  pageNum,
+		FirstPage: 1,
 	}
 
 	if pg.Page < 1 {
@@ -49,8 +50,10 @@ func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData)
 
 	if total%pageSize == 0 {
 		pg.TotalPage = total / pageSize
+		pg.LastPage = pg.TotalPage
 	} else {
 		pg.TotalPage = total/pageSize + 1
+		pg.LastPage = pg.TotalPage
 	}
 
 	if pg.PageNums > pg.TotalPage {
@@ -79,36 +82,73 @@ func Pagination(total, page, pageSize int64, pageNum int64) (pg *PaginationData)
 		pg.PageNums = pg.TotalPage
 	}
 
-	// check even or odd
-	var halfPagesNum int64
-	if pg.PageNums%2 == 0 {
-		// even
-		halfPagesNum = pg.PageNums / 2
-	} else {
-		// odd
-		halfPagesNum = pg.PageNums/2 + 1
-	}
+	var (
+		pages       = []int64{page}
+		n     int64 = 0
+		y     int64 = 0
+	)
+	for i := pg.PageNums; i > 0; i-- {
+		var (
+			p1 = page - n // page font
+			p2 = page + n // page back
+		)
 
-	// the part 1
-	var i int64
-	for i = halfPagesNum; i > 0; i-- {
-		var p = page - i
-		if p <= 0 {
-			continue
+		if p1 >= pg.FirstPage {
+			pages = append([]int64{p1}, pages...)
+			y++
 		}
-		pg.Pages = append(pg.Pages, p)
-	}
 
-	// the part 2
-	var n int64
-	var maxN = pg.PageNums - int64(len(pg.Pages))
-	for n = 0; n < maxN; n++ {
-		var p = page + n
-		if p > pg.TotalPage {
+		if p2 <= pg.LastPage {
+			pages = append(pages, p2)
+			y++
+		}
+
+		pages = SliceTrimSame(pages)
+		if len(pages) >= int(pg.PageNums) {
 			break
 		}
-		pg.Pages = append(pg.Pages, p)
+
+		n++
 	}
+
+	pg.Pages = pages
+
+	// check even or odd
+	//var halfPagesNum int64
+	//if pg.PageNums%2 == 0 {
+	//	// even
+	//	halfPagesNum = pg.PageNums / 2
+	//} else {
+	//	// odd
+	//	halfPagesNum = pg.PageNums/2 + 1
+	//}
+
+	//fmt.Println(halfPagesNum)
+
+	//if page == pg.LastPage {
+	//	halfPagesNum += 1
+	//}
+	//
+	//// the part 1
+	//var i int64
+	//for i = halfPagesNum; i > 0; i-- {
+	//	var p = page - i
+	//	if p <= 0 {
+	//		continue
+	//	}
+	//	pg.Pages = append(pg.Pages, p)
+	//}
+	//
+	//// the part 2
+	//var n int64
+	//var maxN = pg.PageNums - int64(len(pg.Pages))
+	//for n = 0; n < maxN; n++ {
+	//	var p = page + n
+	//	if p > pg.TotalPage {
+	//		break
+	//	}
+	//	pg.Pages = append(pg.Pages, p)
+	//}
 
 	return
 }
