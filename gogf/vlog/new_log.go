@@ -9,5 +9,5 @@ import (
 
 // New logger
 func New(key string) *glog.Logger {
-	return g.Log(key).Skip(1).Line()
+	return g.Log(key).Line()
 }

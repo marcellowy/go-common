@@ -1,0 +1,14 @@
+logger:
+  level: "info"
+  stdout: true
+  path: "./"
+  file: "test_new_log.log"
+  rotateSize: 10240000
+  rotateBackupLimit: 3
+  aa:
+    level: "info"
+    stdout: true
+    path: "./"
+    file: "test_new_log_aa.log"
+    rotateSize: 10240000
+    rotateBackupLimit: 3
