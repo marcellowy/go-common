@@ -1,5 +1,5 @@
 ### Marcello's common Golang Library
-![1](https://badgen.net/#github/release/marcellowy/go-common)
+![1](https://badgen.net/github/release/marcellowy/go-common)
 
 ### How to use
 ```shell
