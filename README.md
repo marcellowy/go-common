@@ -33,9 +33,17 @@ func main() {
 ```
 
 ### version
-#### v0.0.6 2024/04/16
+#### v0.0.12 2024/04/16
 - add thread safe slice
 - add thread safe map/slice unit test case
+#### v0.0.10 2024/01/5
+- bugfix
+#### v0.0.9 2023/11/04
+- remove old version
+#### v0.0.9 2023/11/01
+- fix parse time
+#### v0.0.8 
+- add gogf support
 #### v0.0.5
 - add auto register router for gin framework, see router/README.md
 #### v0.0.4
