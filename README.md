@@ -1,6 +1,5 @@
 ### Marcello's common Golang Library
-![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=master)
-![badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?event=push)
+![1](https://badgen.net/#github/release/marcellowy/go-common)
 
 ### How to use
 ```shell
