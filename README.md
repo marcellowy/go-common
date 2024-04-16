@@ -1,7 +1,6 @@
 ### Marcello's common Golang Library
 ![Release](https://badgen.net/github/release/marcellowy/go-common)
 ![MIT](https://badgen.net/github/license/micromatch/micromatch)
-![CHECKER](https://badgen.net/github/checks/marcellowy/go-common/main)
 ![LAST_COMMIT](https://badgen.net/github/last-commit/marcellowy/go-common)
 
 
