@@ -1,4 +1,5 @@
-### Marcello's Public Go Library
+### Marcello's common Golang Library
+![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 
 ### How to use
 ```shell
