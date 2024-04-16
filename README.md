@@ -1,9 +1,8 @@
 ### Marcello's common Golang Library
+![workflow](https://github.com/marcellowy/go-common/actions/workflows/go.yml/badge.svg?branch=main)
 ![Release](https://badgen.net/github/release/marcellowy/go-common)
-![MIT](https://badgen.net/github/license/micromatch/micromatch)
 ![LAST_COMMIT](https://badgen.net/github/last-commit/marcellowy/go-common)
-
-
+![MIT](https://badgen.net/github/license/micromatch/micromatch)
 
 ### How to use
 ```shell
