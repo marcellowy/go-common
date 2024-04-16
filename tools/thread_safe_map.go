@@ -13,6 +13,10 @@ type TSMap[K, T any] struct {
 	value sync.Map
 }
 
+func NewTSMap[K, T any]() *TSMap[K, T] {
+	return &TSMap[K, T]{}
+}
+
 func (m *TSMap[K, T]) Store(key K, value T) {
 	if _, ok := m.value.Swap(key, value); !ok {
 		m.count.Add(1)
