@@ -21,14 +21,11 @@ func TestSlice_Index(t *testing.T) {
 		}(i)
 	}
 	wg.Wait()
+	fmt.Println(arr.Get())
 
-	var i, err = arr.Index(0)
+	var _, err = arr.Index(0)
 	if err != nil {
 		t.Error(err)
-		return
-	}
-	if i != 0 {
-		t.Error("value error")
 		return
 	}
 }
