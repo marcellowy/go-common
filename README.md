@@ -1,6 +1,6 @@
 ### Marcello's common Golang Library
 ![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
-![example branch parameter](https://github.com/github/docs/actions/workflows/go.yml/badge.svg?branch=master)
+![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=master)
 
 ### How to use
 ```shell
