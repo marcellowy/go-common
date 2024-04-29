@@ -2,6 +2,7 @@ package tools
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -13,7 +14,6 @@ func TestCopyFile(t *testing.T) {
 
 	var dst = "test_copy_file/dst.txt"
 	var src = "test_copy_file/source.txt"
-	_ = os.RemoveAll(dst)
 
 	tests := []struct {
 		name    string
@@ -30,6 +30,11 @@ func TestCopyFile(t *testing.T) {
 			wantErr: false,
 		},
 	}
+
+	_ = os.RemoveAll("test_copy_file")
+	_ = os.MkdirAll(filepath.Dir(src), os.ModePerm)
+	_ = os.WriteFile(src, []byte("test"), os.ModePerm)
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := CopyFile(tt.args.dst, tt.args.src); (err != nil) != tt.wantErr {
@@ -62,27 +67,6 @@ func TestCopy(t *testing.T) {
 			args: args{
 				dst: "./test_copy",
 				src: []string{"E:/project09/go-common/tools/md5_test_file.txt"},
-			},
-		},
-		{
-			name: "test",
-			args: args{
-				dst: "./test_copy123",
-				src: []string{"E:\\project09\\go-common\\tools\\"},
-			},
-		},
-		{
-			name: "test",
-			args: args{
-				dst: "./test_copy123",
-				src: []string{"E:\\project09\\go-common\\tools"},
-			},
-		},
-		{
-			name: "test",
-			args: args{
-				dst: "./test_copy123",
-				src: []string{"E:\\project09\\go-common"},
 			},
 		},
 	}
