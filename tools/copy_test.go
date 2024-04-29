@@ -66,7 +66,7 @@ func TestCopy(t *testing.T) {
 			name: "test",
 			args: args{
 				dst: "./test_copy",
-				src: []string{"./vimmd5_test_file.txt"},
+				src: []string{"./md5_test_file.txt"},
 			},
 		},
 	}
