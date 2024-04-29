@@ -1,5 +1,11 @@
 package vexec
 
+import (
+	"context"
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
 func TestCommand_Run(t *testing.T) {
 	// Create a new instance of Command
 	command := Command{}
