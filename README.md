@@ -36,7 +36,35 @@ func main() {
 }
 ```
 
+#### Copy
+```shell
+    package main
+    
+    import (
+        "fmt"
+        "github.com/marcellowy/go-common/tools"
+    )
+    
+    func main() {
+        _ = os.MkdirAll("./test", os.ModePerm)
+        // copy parent "foo" and all subdirectory and "foo.txt" file to "./test" directory
+        if err := tools.Copy("./test", []string{"../foo", "../foo.txt"});err!=nil{         
+            // print log
+        }
+        
+        // copy file
+        // copy "b.txt" to "../../a.txt"
+        if err := tools.CopyFile("../../a.txt", "./b.txt"); err !=nil {
+            // print log
+        }
+    }     
+```
+
 ### version
+#### v0.0.13 2024/04/29
+- add func Copy copies the contents of the file at the given source path to the destination path. 
+- add func DirHasPrefix checks if the directory path 's' has a prefix 'prefix'.
+- add func CopyFile copies the contents of the file at the given source path to the destination path.
 #### v0.0.12 2024/04/16
 - add thread safe slice
 - add thread safe map/slice unit test case
