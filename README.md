@@ -65,6 +65,7 @@ func main() {
 - add func Copy copies the contents of the file at the given source path to the destination path. 
 - add func DirHasPrefix checks if the directory path 's' has a prefix 'prefix'.
 - add func CopyFile copies the contents of the file at the given source path to the destination path.
+- add func Zip/Unzip zip or unzip file/directory
 #### v0.0.12 2024/04/16
 - add thread safe slice
 - add thread safe map/slice unit test case
