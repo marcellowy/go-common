@@ -49,24 +49,30 @@ func Unzip(ctx context.Context, filename string, saveAs string, handler func(fil
 			return fmt.Errorf("create directory err: %v", err)
 		}
 
-		var dstFile *os.File
-		dstFile, err = os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err != nil {
-			return fmt.Errorf("create file %s err: %v", filePath, err)
-		}
-		var fileInArchive io.ReadCloser
-		fileInArchive, err = f.Open()
-		if err != nil {
-			return fmt.Errorf("open handle err: %v", err)
-		}
-
-		if _, err = io.Copy(dstFile, fileInArchive); err != nil {
-			return fmt.Errorf("io copy err: %v", err)
-		}
-
-		Close(dstFile)
-		Close(fileInArchive)
+		return unzipCopy(filePath, f)
 	}
+	return nil
+}
+
+func unzipCopy(filePath string, f *zip.File) (err error) {
+	var dstFile *os.File
+	dstFile, err = os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+	if err != nil {
+		return fmt.Errorf("create file %s err: %v", filePath, err)
+	}
+	defer Close(dstFile)
+
+	var fileInArchive io.ReadCloser
+	fileInArchive, err = f.Open()
+	if err != nil {
+		return fmt.Errorf("open handle err: %v", err)
+	}
+	defer Close(fileInArchive)
+
+	if _, err = io.Copy(dstFile, fileInArchive); err != nil {
+		return fmt.Errorf("io copy err: %v", err)
+	}
+
 	return nil
 }
 
