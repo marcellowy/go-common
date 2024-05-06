@@ -3,6 +3,7 @@
 package tools
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -37,4 +38,11 @@ func TestPathExists(t *testing.T) {
 		return
 	}
 
+}
+
+func TestRemoveLastSeparator(t *testing.T) {
+	fmt.Println(RemoveLastSeparator(""))
+	fmt.Println(RemoveLastSeparator("a/b/c"))
+	fmt.Println(RemoveLastSeparator("a/b/c/"))
+	fmt.Println(RemoveLastSeparator("\\a\\b\\"))
 }

@@ -27,3 +27,17 @@ func GetCurrentDirectory() string {
 	}
 	return dir
 }
+
+func RemoveLastSeparator(path string) string {
+	var length = len(path) - 1
+	if length == -1 {
+		return ""
+	}
+	if path[length] == '\\' {
+		return path[:length]
+	}
+	if path[length] == '/' {
+		return path[:length]
+	}
+	return path
+}
