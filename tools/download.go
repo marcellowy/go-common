@@ -37,6 +37,11 @@ func (d *DownloadFile) Timeout(timeout time.Duration) {
 	d.timeout = timeout
 }
 
+// GetFilename get filename
+func (d *DownloadFile) GetFilename() string {
+	return d.filename
+}
+
 // DownloadFromUrl download from url
 func (d *DownloadFile) DownloadFromUrl(ctx context.Context, url string) (n int64, err error) {
 
