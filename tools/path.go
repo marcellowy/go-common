@@ -41,3 +41,14 @@ func RemoveLastSeparator(path string) string {
 	}
 	return path
 }
+
+func ReCreateDirectory(dir string) error {
+	var err error
+	if err = os.RemoveAll(dir); err != nil {
+		return err
+	}
+	if err = os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+	return nil
+}
