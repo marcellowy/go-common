@@ -61,14 +61,20 @@ func main() {
 ```
 
 ### version
+#### branch main PreRelase
+- added ftp download/upload/delete
+- added download file from URL, support large file
+- added func ReCreateDirectory removes the directory at the given path and creates a new empty directory at the same path.
+- added func RemoveLastSeparator removes the last separator from the given path string.
+
 #### v0.0.13 2024/04/29
-- add func Copy copies the contents of the file at the given source path to the destination path. 
-- add func DirHasPrefix checks if the directory path 's' has a prefix 'prefix'.
-- add func CopyFile copies the contents of the file at the given source path to the destination path.
-- add func Zip/Unzip zip or unzip file/directory
+- added func Copy copies the contents of the file at the given source path to the destination path. 
+- added func DirHasPrefix checks if the directory path 's' has a prefix 'prefix'.
+- added func CopyFile copies the contents of the file at the given source path to the destination path.
+- added func Zip/Unzip zip or unzip file/directory
 #### v0.0.12 2024/04/16
-- add thread safe slice
-- add thread safe map/slice unit test case
+- added thread safe slice
+- added thread safe map/slice unit test case
 #### v0.0.10 2024/01/5
 - bugfix
 #### v0.0.9 2023/11/04
@@ -76,11 +82,11 @@ func main() {
 #### v0.0.9 2023/11/01
 - fix parse time
 #### v0.0.8 
-- add gogf support
+- added gogf support
 #### v0.0.5
-- add auto register router for gin framework, see router/README.md
+- added auto register router for gin framework, see router/README.md
 #### v0.0.4
-- add GormLogger help write gorm log to zap log
+- added GormLogger help write gorm log to zap log
 - bugfix
 #### v0.0.3
 - add SliceTrimSame remove slice same element

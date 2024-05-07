@@ -28,6 +28,13 @@ func GetCurrentDirectory() string {
 	return dir
 }
 
+// RemoveLastSeparator removes the last separator from the given path string.
+//
+// Parameters:
+// - path: the path string from which the last separator needs to be removed.
+//
+// Returns:
+// - string: the modified path string with the last separator removed.
 func RemoveLastSeparator(path string) string {
 	var length = len(path) - 1
 	if length == -1 {
@@ -42,6 +49,13 @@ func RemoveLastSeparator(path string) string {
 	return path
 }
 
+// ReCreateDirectory removes the directory at the given path and creates a new empty directory at the same path.
+//
+// Parameters:
+// - dir: the path of the directory to be removed and recreated.
+//
+// Returns:
+// - error: an error if any occurred during the removal or creation of the directory.
 func ReCreateDirectory(dir string) error {
 	var err error
 	if err = os.RemoveAll(dir); err != nil {
