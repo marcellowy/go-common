@@ -61,7 +61,7 @@ func main() {
 ```
 
 ### version
-#### branch main PreRelase
+#### v0.0.14 2024/05/07
 - added ftp download/upload/delete
 - added download file from URL, support large file
 - added func ReCreateDirectory removes the directory at the given path and creates a new empty directory at the same path.
