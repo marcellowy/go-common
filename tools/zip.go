@@ -34,9 +34,7 @@ func Unzip(ctx context.Context, filename string, saveAs string, handler func(fil
 		if handler != nil {
 			handler(&f)
 		}
-
 		filePath := filepath.Join(saveAs, f.Name)
-
 		if !strings.HasPrefix(filePath, filepath.Clean(saveAs)+string(os.PathSeparator)) {
 			return fmt.Errorf("invalid file path: %s file: %s", filePath, f.Name)
 		}
@@ -44,12 +42,12 @@ func Unzip(ctx context.Context, filename string, saveAs string, handler func(fil
 			_ = os.MkdirAll(filePath, os.ModePerm)
 			continue
 		}
-
 		if err = os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
 			return fmt.Errorf("create directory err: %v", err)
 		}
-
-		return unzipCopy(filePath, f)
+		if err = unzipCopy(filePath, f); err != nil {
+			return fmt.Errorf("copy file err: %v", err)
+		}
 	}
 	return nil
 }
