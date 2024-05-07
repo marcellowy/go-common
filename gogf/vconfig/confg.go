@@ -1,5 +1,5 @@
-// Package config
-package config
+// Package vconfig
+package vconfig
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// Deprecated: use vconfig.Get instead.
+// Get 获取配置
 func Get(s string, def ...interface{}) *gvar.Var {
 	vr, err := g.Config().Get(context.Background(), s, def...)
 	if err != nil {

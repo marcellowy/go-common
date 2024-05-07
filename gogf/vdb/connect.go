@@ -1,11 +1,11 @@
-// Package db
-package db
+// Package vdb
+package vdb
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/marcellowy/go-common/gogf/config"
+	"github.com/marcellowy/go-common/gogf/vconfig"
 	"github.com/marcellowy/go-common/gogf/vlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -19,14 +19,13 @@ import (
 // - key: the key to retrieve database connection configuration details.
 //
 // Returns a *gorm.DB representing the established database connection.
-// Deprecate: use `vdb.NewConnect` instead
 func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	var (
 		charset          = "utf8mb4"
-		newCharset       = config.Get(key + ".charset")
+		newCharset       = vconfig.Get(key + ".charset")
 		parseTime        = "True"
-		disableParseTime = config.Get(key + ".disableParseTime")
+		disableParseTime = vconfig.Get(key + ".disableParseTime")
 	)
 
 	if !newCharset.IsEmpty() {
@@ -38,11 +37,11 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%s&loc=Local",
-		config.Get(key+".user").String(),
-		config.Get(key+".pwd").String(),
-		config.Get(key+".host").String(),
-		config.Get(key+".port").Int(),
-		config.Get(key+".dbName").String(),
+		vconfig.Get(key+".user").String(),
+		vconfig.Get(key+".pwd").String(),
+		vconfig.Get(key+".host").String(),
+		vconfig.Get(key+".port").Int(),
+		vconfig.Get(key+".dbName").String(),
 		charset,
 		parseTime,
 	)
@@ -53,7 +52,7 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	vlog.Debug(ctx, dsn)
 	var gConfig = &gorm.Config{}
-	if config.Get(key+".debug").Bool() == true {
+	if vconfig.Get(key+".debug").Bool() == true {
 		vlog.Debug(ctx, "gorm debug open")
 		//gConfig.Logger = logger.Default.LogMode(logger.Info)
 		gConfig.Logger = NewGormLog()
@@ -69,13 +68,13 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 		return
 	}
 
-	sDB.SetMaxOpenConns(config.Get(key + ".maxOpenConn").Int())
-	var maxIdleConn = config.Get(key + ".maxIdleConn").Int()
+	sDB.SetMaxOpenConns(vconfig.Get(key + ".maxOpenConn").Int())
+	var maxIdleConn = vconfig.Get(key + ".maxIdleConn").Int()
 	if maxIdleConn > 0 {
 		sDB.SetMaxIdleConns(maxIdleConn)
 	}
 
-	var connMaxLifetime = config.Get(key + ".connMaxLifetime").Int()
+	var connMaxLifetime = vconfig.Get(key + ".connMaxLifetime").Int()
 	if connMaxLifetime > 0 {
 		sDB.SetConnMaxLifetime(time.Duration(connMaxLifetime) * time.Second)
 	}
