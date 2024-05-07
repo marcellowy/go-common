@@ -3,6 +3,7 @@
 package tools
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -57,12 +58,30 @@ func RemoveLastSeparator(path string) string {
 // Returns:
 // - error: an error if any occurred during the removal or creation of the directory.
 func ReCreateDirectory(dir string) error {
-	var err error
-	if err = os.RemoveAll(dir); err != nil {
-		return err
+
+	var fileInfo, err = os.Stat(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// not exist
+		} else {
+			// other error
+			return err
+		}
+	} else {
+		if !fileInfo.IsDir() {
+			// exist and is not dir
+			return fmt.Errorf("%s is not a directory", dir)
+		}
+
+		// exist and is dir
+		if err = os.RemoveAll(dir); err != nil {
+			return fmt.Errorf("remove %s error: %s", dir, err.Error())
+		}
 	}
+
+	// create
 	if err = os.MkdirAll(dir, os.ModePerm); err != nil {
-		return err
+		return fmt.Errorf("create %s error: %s", dir, err.Error())
 	}
 	return nil
 }

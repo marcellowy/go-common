@@ -45,3 +45,30 @@ func TestRemoveLastSeparator(t *testing.T) {
 	fmt.Println(RemoveLastSeparator("a/b/c/"))
 	fmt.Println(RemoveLastSeparator("\\a\\b\\"))
 }
+
+func TestReCreateDirectory(t *testing.T) {
+	type args struct {
+		dir string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test",
+			args: args{
+				dir: "./test_recreate_directory",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ReCreateDirectory(tt.args.dir); (err != nil) != tt.wantErr {
+				t.Errorf("ReCreateDirectory() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
