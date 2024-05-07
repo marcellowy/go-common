@@ -9,7 +9,11 @@ import (
 	"os"
 )
 
-// Md5 calculator md5 string
+// Md5 calculates the MD5 hash of the input string.
+//
+// It takes a string parameter and returns the MD5 hash as a string.// Md5 calculates the MD5 hash of the input string.
+//
+// It takes a string parameter and returns the MD5 hash as a string.
 func Md5(s string) string {
 	if s == "" {
 		return ""
@@ -19,7 +23,9 @@ func Md5(s string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
-// Md5File calculator file md5 string
+// Md5File calculates the MD5 hash of a file specified by the filePath parameter.
+//
+// It takes a string filePath parameter and returns the MD5 hash as a string and an error.
 func Md5File(filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
