@@ -61,6 +61,9 @@ func main() {
 ```
 
 ### version
+#### v0.0.16 
+- only bugfix
+
 #### v0.0.14 2024/05/07
 - added ftp download/upload/delete
 - added download file from URL, support large file
