@@ -5,6 +5,16 @@ import (
 	"testing"
 )
 
+func TestRandomStringWithGeneral(t *testing.T) {
+	var length uint = 5
+	a := RandomStringWithGeneral(length)
+	fmt.Println(a)
+	if len(a) != int(length) {
+		t.Errorf("length err")
+		return
+	}
+}
+
 func TestRandomString(t *testing.T) {
 	var length uint = 5
 	a := RandomString(length, RandomMajuscule)

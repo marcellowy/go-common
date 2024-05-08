@@ -69,6 +69,26 @@ var randomSymbol = []byte{
 // randomSymbolLength randomSymbol length
 const randomSymbolLength = 13
 
+func RandomStringWithGeneral(length uint) string {
+	return RandomString(length, RandomMajuscule|RandomDigital|RandomLowercase)
+}
+
+func RandomStringWithDigital(length uint) string {
+	return RandomString(length, RandomDigital)
+}
+
+func RandomStringWithMajuscule(length uint) string {
+	return RandomString(length, RandomMajuscule)
+}
+
+func RandomStringWithLowercase(length uint) string {
+	return RandomString(length, RandomLowercase)
+}
+
+func RandomStringWithComplex(length uint) string {
+	return RandomString(length, RandomAll)
+}
+
 // RandomString random a string
 func RandomString(length uint, charType randomType) (s string) {
 
