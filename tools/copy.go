@@ -94,11 +94,12 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 		if subPath == "" {
 			return nil
 		}
-		path = rootDst + subPath
+		dstPath := rootDst + subPath
+		srcPath := rootSrc + subPath
 
 		if d.IsDir() {
 
-			_ = os.MkdirAll(path, os.ModePerm)
+			_ = os.MkdirAll(dstPath, os.ModePerm)
 			return nil
 		}
 
@@ -109,7 +110,8 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 		if (info.Mode()&os.ModeSymlink != 0) || !info.Mode().IsRegular() {
 			return nil
 		}
-		return CopyFile(rootDst+subPath, path)
+
+		return CopyFile(dstPath, srcPath)
 	}
 }
 
@@ -126,6 +128,7 @@ func CopyFile(dst, src string) error {
 		newHandle, oldHandle *os.File
 		err                  error
 	)
+	//fmt.Println(dst, src)
 	if newHandle, err = os.OpenFile(dst, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm); err != nil {
 		return fmt.Errorf("open %s: %v", dst, err)
 	}

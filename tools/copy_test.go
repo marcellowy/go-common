@@ -58,23 +58,21 @@ func TestCopy(t *testing.T) {
 		{
 			name: "test",
 			args: args{
-				dst: "./test_copy",
+				dst: "./test_copy_dir",
 				src: []string{"./"},
 			},
 		},
 		{
 			name: "test",
 			args: args{
-				dst: "./test_copy",
+				dst: "./test_copy_dir",
 				src: []string{"./md5_test_file.txt"},
 			},
 		},
 	}
 
-	_ = os.RemoveAll("./test_copy123")
-	_ = os.RemoveAll("./test_copy")
-	_ = os.MkdirAll("./test_copy123", os.ModePerm)
-	_ = os.MkdirAll("./test_copy", os.ModePerm)
+	_ = os.RemoveAll("./test_copy_dir")
+	_ = os.MkdirAll("./test_copy_dir", os.ModePerm)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -85,7 +83,7 @@ func TestCopy(t *testing.T) {
 	}
 
 	defer func() {
-		_ = os.RemoveAll("./test_copy123")
-		_ = os.RemoveAll("./test_copy")
+		//_ = os.RemoveAll("./test_copy123")
+		//_ = os.RemoveAll("./test_copy")
 	}()
 }
