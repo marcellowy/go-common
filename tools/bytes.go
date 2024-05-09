@@ -36,14 +36,17 @@ func BytesToString(b []byte) string {
 // SubString returns a substring of 's' starting from 'pos' and optionally ending at 'to'.
 // If 'pos' is out of bounds, it returns the original string.
 func SubString(s string, pos uint, to ...uint) string {
-	if len(s) == 0 {
+	var (
+		sLen   = uint(len(s))
+		endNum = sLen
+	)
+	if sLen == 0 {
 		return ""
 	}
-	if pos > uint(len(s)-1) {
+	if pos > sLen-1 {
 		return s
 	}
-	var endNum = uint(len(s))
-	if len(to) == 1 && to[0] < endNum {
+	if len(to) == 1 && to[0] < sLen {
 		endNum = to[0]
 	}
 	if endNum < pos {

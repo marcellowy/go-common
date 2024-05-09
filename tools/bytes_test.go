@@ -170,6 +170,15 @@ func TestSubStr(t *testing.T) {
 			},
 			want: "abcdef",
 		},
+		{
+			name: "test",
+			args: args{
+				s:   "ab",
+				pos: 0,
+				end: 5,
+			},
+			want: "ab",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
