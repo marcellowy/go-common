@@ -46,11 +46,11 @@ func SliceRemove[T comparable](remove []T, s []T) []T {
 func RemoveSameFromStringSlice(slice []string) []string {
 
 	var result []string
-	tmp := map[string]byte{} // 存放不重复主键
+	tmp := map[string]byte{}
 	for _, s := range slice {
 		l := len(tmp)
 		tmp[s] = 0
-		if len(tmp) != l { // 加入map后，map长度变化，则元素不重复
+		if len(tmp) != l {
 			result = append(result, s)
 		}
 	}
