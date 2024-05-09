@@ -39,6 +39,10 @@ func TestZip(t *testing.T) {
 			}
 		})
 	}
+
+	defer func() {
+		_ = os.RemoveAll("test_zip_file")
+	}()
 }
 
 func TestUnzip(t *testing.T) {
@@ -77,6 +81,10 @@ func TestUnzip(t *testing.T) {
 			})
 		}
 	}
+
+	defer func() {
+		_ = os.RemoveAll("test_unzip_file")
+	}()
 
 	type args struct {
 		ctx      context.Context

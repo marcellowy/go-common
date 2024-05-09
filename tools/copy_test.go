@@ -41,9 +41,14 @@ func TestCopyFile(t *testing.T) {
 			}
 		})
 	}
+
+	defer func() {
+		_ = os.RemoveAll("test_copy_file")
+	}()
+
 }
 
-func TestCopy(t *testing.T) {
+func TestCopyDir(t *testing.T) {
 	type args struct {
 		dst string
 		src []string
@@ -57,7 +62,7 @@ func TestCopy(t *testing.T) {
 			name: "test",
 			args: args{
 				dst: "./test_copy_dir",
-				src: []string{"./"},
+				src: []string{"./test_copy_dir_1"},
 			},
 		},
 		{
@@ -72,6 +77,15 @@ func TestCopy(t *testing.T) {
 	_ = os.RemoveAll("./test_copy_dir")
 	_ = os.MkdirAll("./test_copy_dir", os.ModePerm)
 
+	_ = os.RemoveAll("./test_copy_dir_1")
+	{
+		_ = os.MkdirAll("./test_copy_dir_1/test", os.ModePerm)
+		_ = os.WriteFile("./test_copy_dir_1/test/test1.txt", []byte("test1"), os.ModePerm)
+		_ = os.WriteFile("./test_copy_dir_1/test/test2.txt", []byte("test2"), os.ModePerm)
+		_ = os.WriteFile("./test_copy_dir_1/test/test3.txt", []byte("test3"), os.ModePerm)
+		_ = os.WriteFile("./test_copy_dir_1/test/test4.txt", []byte("test4"), os.ModePerm)
+	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := CopyDir(tt.args.dst, tt.args.src...); (err != nil) != tt.wantErr {
@@ -81,7 +95,7 @@ func TestCopy(t *testing.T) {
 	}
 
 	defer func() {
-		//_ = os.RemoveAll("./test_copy123")
-		//_ = os.RemoveAll("./test_copy")
+		_ = os.RemoveAll("./test_copy_dir")
+		_ = os.RemoveAll("./test_copy_dir_1")
 	}()
 }

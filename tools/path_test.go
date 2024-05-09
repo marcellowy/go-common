@@ -3,6 +3,7 @@ package tools
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -63,6 +64,11 @@ func TestReCreateDirectory(t *testing.T) {
 			wantErr: false,
 		},
 	}
+
+	defer func() {
+		_ = os.RemoveAll("./test_recreate_directory")
+	}()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := ReCreateDirectory(tt.args.dir); (err != nil) != tt.wantErr {
