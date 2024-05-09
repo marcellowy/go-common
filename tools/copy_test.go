@@ -76,7 +76,7 @@ func TestCopy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Copy(tt.args.dst, tt.args.src...); (err != nil) != tt.wantErr {
+			if err := CopyDir(tt.args.dst, tt.args.src...); (err != nil) != tt.wantErr {
 				t.Errorf("Copy() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
