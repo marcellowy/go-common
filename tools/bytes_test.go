@@ -67,3 +67,115 @@ func TestBytesToString(t *testing.T) {
 		})
 	}
 }
+
+func TestReverseString(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test",
+			args: args{
+				s: "abc",
+			},
+			want: "cba",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ReverseString(tt.args.s); got != tt.want {
+				t.Errorf("ReverseString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSubStr(t *testing.T) {
+	type args struct {
+		s   string
+		pos uint
+		end uint
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 5,
+				end: 5 + 3,
+			},
+			want: "fgh",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 14,
+				end: 100,
+			},
+			want: "abcdefghijklmn",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 13,
+				end: 100,
+			},
+			want: "n",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 5,
+				end: 4,
+			},
+			want: "",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 5,
+				end: 5,
+			},
+			want: "",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 3,
+				end: 7,
+			},
+			want: "defg",
+		},
+		{
+			name: "test",
+			args: args{
+				s:   "abcdefghijklmn",
+				pos: 0,
+				end: 6,
+			},
+			want: "abcdef",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SubString(tt.args.s, tt.args.pos, tt.args.end); got != tt.want {
+				t.Errorf("SubStr() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
