@@ -55,7 +55,6 @@ func TestReCreateDirectory(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{

@@ -17,7 +17,6 @@ func TestZip(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{
@@ -90,7 +89,6 @@ func TestUnzip(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{

@@ -29,7 +29,6 @@ func TestInSlice(t *testing.T) {
 		want bool
 	}
 	tests := []testCase[string]{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args[string]{

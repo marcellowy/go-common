@@ -28,7 +28,6 @@ func TestWarehouseDownloadFTP_Download(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			fields: fields{

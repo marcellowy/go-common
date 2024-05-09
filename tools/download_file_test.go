@@ -17,7 +17,6 @@ func TestDownloadFileFromUrl(t *testing.T) {
 		wantN   int64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{

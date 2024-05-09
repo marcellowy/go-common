@@ -23,7 +23,6 @@ func TestStringToBytes(t *testing.T) {
 		args args
 		want []byte
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{
@@ -50,7 +49,6 @@ func TestBytesToString(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{
@@ -77,7 +75,6 @@ func TestReverseString(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{
@@ -106,7 +103,6 @@ func TestSubStr(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "test",
 			args: args{
