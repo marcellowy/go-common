@@ -56,3 +56,13 @@ func RemoveSameFromStringSlice(slice []string) []string {
 	}
 	return result
 }
+
+// InSlice check value in []T
+func InSlice[T comparable](need T, arr []T) bool {
+	for _, v := range arr {
+		if v == need {
+			return true
+		}
+	}
+	return false
+}
