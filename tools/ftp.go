@@ -14,7 +14,7 @@ import (
 // FTP ftp client
 type FTP struct {
 	conn *ftp.ServerConn
-	// 连接ftp信息
+	// connect info
 	FTPAddress  string
 	FTPUsername string
 	FTPPassword string
