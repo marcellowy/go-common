@@ -3,11 +3,14 @@ package vdb
 import (
 	"context"
 	"gorm.io/gorm"
+	"os"
 	"testing"
 )
 
 func TestNewConnect(t *testing.T) {
-	t.SkipNow()
+	if os.Getenv("TEST_DB_CONNECT") != "1" {
+		t.SkipNow()
+	}
 	type args struct {
 		ctx context.Context
 		key string

@@ -34,6 +34,7 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 		maxOpenConn      = vconfig.Get(key + ".maxOpenConn").Int()
 		maxIdleConn      = vconfig.Get(key + ".maxIdleConn").Int()
 		connMaxLifetime  = vconfig.Get(key + ".connMaxLifetime").Int()
+		debug            = vconfig.Get(key + ".debug").Bool()
 	)
 
 	if !newCharset.IsEmpty() {
@@ -54,7 +55,7 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	vlog.Debug(ctx, dsn)
 	var gConfig = &gorm.Config{}
-	if vconfig.Get(key+".debug").Bool() == true {
+	if debug {
 		vlog.Debug(ctx, "gorm debug open")
 		//gConfig.Logger = logger.Default.LogMode(logger.Info)
 		gConfig.Logger = NewGormLog()
