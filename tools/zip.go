@@ -91,11 +91,11 @@ func Zip(zipPath string, paths ...string) error {
 	if err != nil {
 		return err
 	}
-	defer archive.Close()
+	defer Close(archive)
 
 	// New zip writer.
 	zipWriter := zip.NewWriter(archive)
-	defer zipWriter.Close()
+	defer Close(zipWriter)
 
 	// Traverse the file or directory.
 	for _, rootPath := range paths {
