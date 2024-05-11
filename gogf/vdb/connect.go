@@ -22,10 +22,18 @@ import (
 func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	var (
+		user             = vconfig.Get(key + ".user").String()
+		password         = vconfig.Get(key + ".password").String()
+		host             = vconfig.Get(key + ".host").String()
+		port             = vconfig.Get(key + ".port").Int()
+		schema           = vconfig.Get(key + ".schema").String()
 		charset          = "utf8mb4"
 		newCharset       = vconfig.Get(key + ".charset")
 		parseTime        = "True"
 		disableParseTime = vconfig.Get(key + ".disableParseTime")
+		maxOpenConn      = vconfig.Get(key + ".maxOpenConn").Int()
+		maxIdleConn      = vconfig.Get(key + ".maxIdleConn").Int()
+		connMaxLifetime  = vconfig.Get(key + ".connMaxLifetime").Int()
 	)
 
 	if !newCharset.IsEmpty() {
@@ -37,13 +45,7 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%s&loc=Local",
-		vconfig.Get(key+".user").String(),
-		vconfig.Get(key+".pwd").String(),
-		vconfig.Get(key+".host").String(),
-		vconfig.Get(key+".port").Int(),
-		vconfig.Get(key+".dbName").String(),
-		charset,
-		parseTime,
+		user, password, host, port, schema, charset, parseTime,
 	)
 	var (
 		err error
@@ -68,13 +70,11 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 		return
 	}
 
-	sDB.SetMaxOpenConns(vconfig.Get(key + ".maxOpenConn").Int())
-	var maxIdleConn = vconfig.Get(key + ".maxIdleConn").Int()
+	sDB.SetMaxOpenConns(maxOpenConn)
 	if maxIdleConn > 0 {
 		sDB.SetMaxIdleConns(maxIdleConn)
 	}
 
-	var connMaxLifetime = vconfig.Get(key + ".connMaxLifetime").Int()
 	if connMaxLifetime > 0 {
 		sDB.SetConnMaxLifetime(time.Duration(connMaxLifetime) * time.Second)
 	}
