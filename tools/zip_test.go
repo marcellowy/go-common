@@ -103,7 +103,7 @@ func TestUnzip(t *testing.T) {
 				ctx:      context.Background(),
 				filename: "test_unzip_file/test.zip",
 				saveAs:   "test_unzip_file/unzip/test",
-				handler:  nil,
+				handler:  UnzipGBKHandler,
 			},
 			wantErr: false,
 		},
