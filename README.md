@@ -61,6 +61,9 @@ func main() {
 ```
 
 ### version
+#### preRelease
+- support base64 encode/decode
+
 #### v0.0.16 
 - only bugfix
 
