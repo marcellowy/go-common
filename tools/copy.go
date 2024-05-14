@@ -9,50 +9,6 @@ import (
 	"strings"
 )
 
-// CopyDir copies the contents of the source directories to the destination directory.
-//
-// Parameters:
-// - dest: the destination directory where the contents will be copied to.
-// - src: the source directories to copy from.
-//
-// Returns:
-// - error: an error if the directory copy operation fails.
-func CopyDir(dest string, src ...string) error {
-	dst := strings.Trim(dest, " ")
-	if dst == "" {
-		return fmt.Errorf("dst is empty")
-	}
-
-	var (
-		fi  os.FileInfo
-		err error
-	)
-
-	if fi, err = os.Stat(dst); err != nil {
-		return fmt.Errorf("stat %s: %v", dst, err)
-	}
-	if dst, err = filepath.Abs(dst); err != nil {
-		return fmt.Errorf("abs %s: %v", dst, err)
-	}
-	for _, f := range src {
-		if fi, err = os.Stat(f); err != nil {
-			return fmt.Errorf("stat %s: %v", f, err)
-		}
-		if f, err = filepath.Abs(f); err != nil {
-			return fmt.Errorf("abs %s: %v", f, err)
-		}
-		if !fi.IsDir() {
-			_, filename := filepath.Split(f)
-			dstFile := dst + string(os.PathSeparator) + filename
-			return CopyFile(dstFile, f)
-		}
-		if err = filepath.WalkDir(f, walkDir(dst, f)); err != nil {
-			return fmt.Errorf("walk %s: %v", f, err)
-		}
-	}
-	return nil
-}
-
 // Copy copies the contents of the file at the given source path to the destination path.
 //
 // Parameters:
@@ -61,7 +17,6 @@ func CopyDir(dest string, src ...string) error {
 //
 // Returns:
 // - error: an error if the file copy operation fails.
-// Deprecated: use CopyDir instead
 func Copy(dst string, src ...string) error {
 	dst = strings.Trim(dst, " ")
 	if dst == "" {
