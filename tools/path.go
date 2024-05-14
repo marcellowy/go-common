@@ -85,3 +85,28 @@ func ReCreateDirectory(dir string) error {
 	}
 	return nil
 }
+
+// CreateEmptyFile creates an empty file at the given path.
+// if the file already exists, it will clean content
+func CreateEmptyFile(filename string) error {
+	dir, file := filepath.Split(filename)
+	if file == "" {
+		return fmt.Errorf("invalid filename: %s", filename)
+	}
+
+	var (
+		fileInfo os.FileInfo
+		err      error
+	)
+
+	if fileInfo, err = os.Stat(dir); err == nil {
+
+		if !fileInfo.IsDir() {
+			return fmt.Errorf("%s exists and is not a directory", dir)
+		}
+	} else {
+		_ = os.MkdirAll(dir, os.ModePerm)
+	}
+
+	return os.WriteFile(filename, []byte{}, os.ModePerm)
+}

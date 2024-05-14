@@ -77,3 +77,44 @@ func TestReCreateDirectory(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateEmptyFile(t *testing.T) {
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "test",
+			args: args{
+				filename: "./test_create_empty_file/test_create_empty_file",
+			},
+		},
+		{
+			name: "test",
+			args: args{
+				filename: "./test_create_empty_file/test_create_empty_file.txt",
+			},
+		},
+		{
+			name: "test",
+			args: args{
+				filename: "./test_create_empty_file/test_create_empty_file/",
+			},
+			wantErr: true,
+		},
+	}
+
+	_ = os.RemoveAll("./test_create_empty_file")
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := CreateEmptyFile(tt.args.filename); (err != nil) != tt.wantErr {
+				t.Errorf("CreateEmptyFile() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
