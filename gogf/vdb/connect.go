@@ -5,11 +5,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/marcellowy/go-common/gogf/vconfig"
 	"github.com/marcellowy/go-common/gogf/vlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"time"
 )
 
 // NewConnect establishes a new database connection based on the provided context and key.
@@ -74,6 +75,8 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 	sDB.SetMaxOpenConns(maxOpenConn)
 	if maxIdleConn > 0 {
 		sDB.SetMaxIdleConns(maxIdleConn)
+	} else {
+		sDB.SetMaxIdleConns(1)
 	}
 
 	if connMaxLifetime > 0 {
