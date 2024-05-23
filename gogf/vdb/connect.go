@@ -13,6 +13,114 @@ import (
 	"gorm.io/gorm"
 )
 
+// Config connect config
+type Config struct {
+	User            string
+	Password        string
+	Host            string
+	Port            int
+	Schema          string
+	Charset         string
+	ParseTime       bool
+	MaxOpenConn     int
+	MaxIdleConn     int
+	ConnMaxLifeTime time.Duration
+	Debug           bool
+}
+
+const (
+	// DefaultMaxIdleConn default max idle conns
+	DefaultMaxIdleConn = 1
+	DefaultMaxOpenConn = 10
+)
+
+// NewConnectWithConfig via config connect new
+func NewConnectWithConfig(ctx context.Context, config *Config) (db *gorm.DB) {
+
+	var parseTime = "True"
+	if !config.ParseTime {
+		parseTime = "False"
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%s&loc=Local",
+		config.User, config.Password, config.Host, config.Port, config.Schema, config.Charset, parseTime,
+	)
+	var (
+		err error
+		sDB *sql.DB
+	)
+
+	vlog.Debug(ctx, dsn)
+	var gConfig = &gorm.Config{}
+	if config.Debug {
+		vlog.Debug(ctx, "gorm debug open")
+		//gConfig.Logger = logger.Default.LogMode(logger.Info)
+		gConfig.Logger = NewGormLog()
+	}
+
+	if db, err = gorm.Open(mysql.Open(dsn), gConfig); err != nil {
+		vlog.Error(ctx, err)
+		return
+	}
+
+	if sDB, err = db.DB(); err != nil {
+		vlog.Error(ctx, err)
+		return
+	}
+
+	if config.MaxOpenConn > 0 {
+		sDB.SetMaxOpenConns(config.MaxOpenConn)
+	} else {
+		sDB.SetMaxOpenConns(DefaultMaxOpenConn)
+	}
+
+	if config.MaxIdleConn > 0 {
+		sDB.SetMaxIdleConns(config.MaxIdleConn)
+	} else {
+		sDB.SetMaxIdleConns(DefaultMaxIdleConn)
+	}
+
+	if config.ConnMaxLifeTime > 0 {
+		sDB.SetConnMaxLifetime(config.ConnMaxLifeTime)
+	}
+
+	return
+}
+
+// NewQuickConnect via framework config connect new
+func NewQuickConnect(ctx context.Context, key string) (db *gorm.DB) {
+	var (
+		config = &Config{
+			User:        vconfig.Get(key + ".user").String(),
+			Password:    vconfig.Get(key + ".password").String(),
+			Host:        vconfig.Get(key + ".host").String(),
+			Port:        vconfig.Get(key + ".port").Int(),
+			Schema:      vconfig.Get(key + ".schema").String(),
+			Charset:     vconfig.Get(key + ".charset").String(),
+			MaxOpenConn: vconfig.Get(key + ".maxOpenConn").Int(),
+			MaxIdleConn: vconfig.Get(key + ".maxIdleConn").Int(),
+			Debug:       vconfig.Get(key + ".debug").Bool(),
+		}
+	)
+
+	disableParseTime := vconfig.Get(key + ".disableParseTime").Bool()
+	connMaxLifeTime := vconfig.Get(key + ".connMaxLifetime").Int()
+
+	if config.Charset == "" {
+		config.Charset = "utf8"
+	}
+
+	if disableParseTime {
+		config.ParseTime = false
+	}
+
+	if connMaxLifeTime > 0 {
+		config.ConnMaxLifeTime = time.Duration(connMaxLifeTime) * time.Second
+	}
+
+	return NewConnectWithConfig(ctx, config)
+}
+
 // NewConnect establishes a new database connection based on the provided context and key.
 //
 // Parameters:
@@ -20,6 +128,7 @@ import (
 // - key: the key to retrieve database connection configuration details.
 //
 // Returns a *gorm.DB representing the established database connection.
+// Deprecated: use NewQuickConnect instead.
 func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	var (
@@ -83,5 +192,5 @@ func NewConnect(ctx context.Context, key string) (db *gorm.DB) {
 		sDB.SetConnMaxLifetime(time.Duration(connMaxLifetime) * time.Second)
 	}
 
-	return db
+	return
 }
