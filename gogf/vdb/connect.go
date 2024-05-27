@@ -4,7 +4,9 @@ package vdb
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"github.com/marcellowy/go-common/tools"
 	"time"
 
 	"github.com/marcellowy/go-common/gogf/vconfig"
@@ -26,6 +28,14 @@ type Config struct {
 	MaxIdleConn     int
 	ConnMaxLifeTime time.Duration
 	Debug           bool
+}
+
+func (c *Config) Hash() (string, error) {
+	bytes, err := json.Marshal(c)
+	if err != nil {
+		return "", err
+	}
+	return tools.Md5(string(bytes)), nil
 }
 
 const (
