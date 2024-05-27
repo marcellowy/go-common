@@ -89,6 +89,11 @@ func (m *TSMap[K, T]) LoadAndDelete(key K) (T, bool) {
 	return realValue, false
 }
 
+// Delete deletes the value for a key.
+func (m *TSMap[K, T]) Delete(key K) {
+	m.value.Delete(key)
+}
+
 // LoadOrStore returns the existing value for the key if present.
 // Otherwise, it stores and returns the given value.
 // The loaded result is true if the value was loaded, false if stored.
