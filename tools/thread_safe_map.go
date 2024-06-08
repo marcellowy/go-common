@@ -18,9 +18,8 @@ func NewTSMap[K, T any]() *TSMap[K, T] {
 }
 
 func (m *TSMap[K, T]) Store(key K, value T) {
-	if _, ok := m.value.Swap(key, value); !ok {
-		m.count.Add(1)
-	}
+	m.value.Store(key, value)
+	m.count.Add(1)
 }
 
 // Load returns the value stored in the map for a key, or nil if no
