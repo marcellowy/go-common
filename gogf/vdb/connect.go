@@ -98,6 +98,17 @@ func NewConnectWithConfig(ctx context.Context, config *Config) (db *gorm.DB) {
 }
 
 // NewQuickConnect via framework config connect new
+//
+//	the_key:
+//	  host: ""
+//	  port: 3306
+//	  user: ""
+//	  password: ""
+//	  schema: ""
+//	  charset: "utf8mb4"
+//	  maxOpenConn: 10
+//	  maxIdleConn: 10
+//	  debug: true
 func NewQuickConnect(ctx context.Context, key string) (db *gorm.DB) {
 	var (
 		config = &Config{
