@@ -128,6 +128,24 @@ func CopyFile(dst, src string) error {
 		newHandle, oldHandle *os.File
 		err                  error
 	)
+	srcInfo, err := os.Stat(src)
+	if err != nil {
+		return fmt.Errorf("stat %s: %v", src, err)
+	}
+	if srcInfo.IsDir() {
+		return fmt.Errorf("%s is a directory", src)
+	}
+
+	// if dst is a dir
+	info, err := os.Stat(dst)
+	if err == nil {
+		// dst is directory
+		if info.IsDir() {
+			_, name := filepath.Split(src)
+			dst = dst + "/" + name
+		}
+	}
+
 	//fmt.Println(dst, src)
 	if newHandle, err = os.OpenFile(dst, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm); err != nil {
 		return fmt.Errorf("open %s: %v", dst, err)
