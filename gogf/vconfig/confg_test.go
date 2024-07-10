@@ -10,3 +10,16 @@ func TestGet(t *testing.T) {
 		return
 	}
 }
+
+func TestNewConfigFromFile(t *testing.T) {
+	config, err := NewConfigFromFile("new_config.yaml")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	val := config.Get("test_new")
+	if val.Int() != 123 {
+		t.Error("get error")
+		return
+	}
+}
