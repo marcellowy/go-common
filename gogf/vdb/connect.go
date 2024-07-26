@@ -133,6 +133,8 @@ func NewQuickConnect(ctx context.Context, key string) (db *gorm.DB) {
 
 	if disableParseTime {
 		config.ParseTime = false
+	} else {
+		config.ParseTime = true
 	}
 
 	if connMaxLifeTime > 0 {
