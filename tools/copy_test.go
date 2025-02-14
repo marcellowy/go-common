@@ -36,7 +36,7 @@ func TestCopyFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := CopyFile(tt.args.dst, tt.args.src); (err != nil) != tt.wantErr {
+			if _, err := CopyFile(tt.args.dst, tt.args.src); (err != nil) != tt.wantErr {
 				t.Errorf("CopyFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
