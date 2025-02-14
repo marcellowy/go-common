@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -43,8 +44,10 @@ func Copy(dst string, src ...string) error {
 		}
 		if !fi.IsDir() {
 			_, filename := filepath.Split(f)
-			dstFile := dst + string(os.PathSeparator) + filename
-			return CopyFile(dstFile, f)
+			//dstFile := dst + string(os.PathSeparator) + filename
+			dstFile := path.Join(dst, filename)
+			_, err = CopyFile(dstFile, f)
+			return err
 		}
 		if err = filepath.WalkDir(f, walkDir(dst, f)); err != nil {
 			return fmt.Errorf("walk %s: %v", f, err)
@@ -111,7 +114,8 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 			return nil
 		}
 
-		return CopyFile(dstPath, srcPath)
+		_, err = CopyFile(dstPath, srcPath)
+		return err
 	}
 }
 
@@ -123,17 +127,17 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 //
 // Returns:
 // - error: an error if the file copy operation fails.
-func CopyFile(dst, src string) error {
+func CopyFile(dst, src string) (string, error) {
 	var (
 		newHandle, oldHandle *os.File
 		err                  error
 	)
 	srcInfo, err := os.Stat(src)
 	if err != nil {
-		return fmt.Errorf("stat %s: %v", src, err)
+		return "", fmt.Errorf("stat %s: %v", src, err)
 	}
 	if srcInfo.IsDir() {
-		return fmt.Errorf("%s is a directory", src)
+		return "", fmt.Errorf("%s is a directory", src)
 	}
 
 	// if dst is a dir
@@ -142,23 +146,24 @@ func CopyFile(dst, src string) error {
 		// dst is directory
 		if info.IsDir() {
 			_, name := filepath.Split(src)
-			dst = dst + "/" + name
+			//dst = dst + "/" + name
+			dst = path.Join(dst, name)
 		}
 	}
 
 	//fmt.Println(dst, src)
 	if newHandle, err = os.OpenFile(dst, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm); err != nil {
-		return fmt.Errorf("open %s: %v", dst, err)
+		return "", fmt.Errorf("open %s: %v", dst, err)
 	}
 	defer Close(newHandle)
 
 	if oldHandle, err = os.Open(src); err != nil {
-		return fmt.Errorf("open %s: %v", src, err)
+		return "", fmt.Errorf("open %s: %v", src, err)
 	}
 	defer Close(oldHandle)
 
 	if _, err = io.Copy(newHandle, oldHandle); err != nil {
-		return fmt.Errorf("copy %s to %s: %v", src, dst, err)
+		return "", fmt.Errorf("copy %s to %s: %v", src, dst, err)
 	}
-	return nil
+	return dst, nil
 }
