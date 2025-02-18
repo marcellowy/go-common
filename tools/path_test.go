@@ -108,13 +108,15 @@ func TestCreateEmptyFile(t *testing.T) {
 		},
 	}
 
-	_ = os.RemoveAll("./test_create_empty_file")
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := CreateEmptyFile(tt.args.filename); (err != nil) != tt.wantErr {
 				t.Errorf("CreateEmptyFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+	}
+	if err := os.RemoveAll("./test_create_empty_file"); err != nil {
+		t.Error(err)
+		return
 	}
 }
