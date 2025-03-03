@@ -16,8 +16,9 @@ func TestFormatDuration(t *testing.T) {
 	}{
 		{
 			args: args{
-				d: 12 * time.Hour,
+				d: 345 * time.Second,
 			},
+			want: "5 min 45 s",
 		},
 	}
 	for _, tt := range tests {
@@ -43,6 +44,7 @@ func TestFormatBytes(t *testing.T) {
 			args: args{
 				bytes: 1024,
 			},
+			want: "1.00 KB",
 		},
 	}
 	for _, tt := range tests {

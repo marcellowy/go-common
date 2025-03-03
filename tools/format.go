@@ -38,17 +38,30 @@ func FormatDuration(d time.Duration) string {
 	seconds := d / time.Second
 
 	result := ""
+	s := ""
 	if days > 0 {
-		result += fmt.Sprintf(" %d day", days)
+		result += fmt.Sprintf("%d day", days)
 	}
 	if hours > 0 {
-		result += fmt.Sprintf(" %d hour", hours)
+		s = "%d hour"
+		if len(result) > 0 {
+			s = " %d hour"
+		}
+		result += fmt.Sprintf(s, hours)
 	}
 	if minutes > 0 {
-		result += fmt.Sprintf(" %d min", minutes)
+		s = "%d min"
+		if len(result) > 0 {
+			s = " %d min"
+		}
+		result += fmt.Sprintf(s, minutes)
 	}
 	if seconds > 0 || result == "" { // 如果时间太短，确保至少显示 "0秒"
-		result += fmt.Sprintf(" %d s"+
+		s = "%d s"
+		if len(result) > 0 {
+			s = " %d s"
+		}
+		result += fmt.Sprintf(s+
 			"", seconds)
 	}
 	return result
