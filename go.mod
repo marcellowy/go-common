@@ -6,9 +6,9 @@ require (
 	github.com/gogf/gf/v2 v2.7.0
 	github.com/stretchr/testify v1.8.3
 	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8
-	golang.org/x/text v0.13.0
+	golang.org/x/text v0.14.0
 	gorm.io/driver/mysql v1.5.6
-	gorm.io/gorm v1.25.9
+	gorm.io/gorm v1.25.12
 )
 
 require (
