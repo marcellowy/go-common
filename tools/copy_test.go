@@ -99,3 +99,54 @@ func TestCopyDir(t *testing.T) {
 		_ = os.RemoveAll("./test_copy_dir_1")
 	}()
 }
+
+func TestMove(t *testing.T) {
+
+	// 构造数据
+	if err := os.MkdirAll("./test_move_dir1", os.ModePerm); err != nil {
+		t.Error(err)
+		return
+	}
+	defer func() {
+		_ = os.RemoveAll("./test_move_dir1")
+	}()
+
+	if err := os.MkdirAll("./test_move_dir2", os.ModePerm); err != nil {
+		t.Error(err)
+		return
+	}
+	defer func() {
+		_ = os.RemoveAll("./test_move_dir2")
+	}()
+
+	_ = os.WriteFile("./test_move_dir1/test1.txt", []byte("test1"), os.ModePerm)
+	_ = os.WriteFile("./test_move_dir1/test2.txt", []byte("test2"), os.ModePerm)
+	_ = os.WriteFile("./test_move_dir1/test3.txt", []byte("test3"), os.ModePerm)
+
+	type args struct {
+		dst string
+		src []string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "1",
+			args: args{
+				dst: "./test_move_dir2",
+				src: []string{
+					"./test_move_dir1",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := Move(tt.args.dst, tt.args.src...); (err != nil) != tt.wantErr {
+				t.Errorf("Move() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

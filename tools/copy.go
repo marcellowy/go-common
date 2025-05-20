@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+// Move the contents of the file at the given source path to the destination path.
+func Move(dst string, src ...string) error {
+	return copyInternal(false, dst, src...)
+}
+
 // Copy copies the contents of the file at the given source path to the destination path.
 //
 // Parameters:
@@ -19,6 +24,10 @@ import (
 // Returns:
 // - error: an error if the file copy operation fails.
 func Copy(dst string, src ...string) error {
+	return copyInternal(true, dst, src...)
+}
+
+func copyInternal(copy bool, dst string, src ...string) error {
 	dst = strings.Trim(dst, " ")
 	if dst == "" {
 		return fmt.Errorf("dst is empty")
@@ -128,6 +137,14 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 // Returns:
 // - error: an error if the file copy operation fails.
 func CopyFile(dst, src string) (string, error) {
+	return copyFileInternal(true, dst, src)
+}
+
+func MoveFile(dst, src string) (string, error) {
+	return copyFileInternal(false, dst, src)
+}
+
+func copyFileInternal(copy bool, dst, src string) (string, error) {
 	var (
 		newHandle, oldHandle *os.File
 		err                  error
@@ -151,7 +168,14 @@ func CopyFile(dst, src string) (string, error) {
 		}
 	}
 
-	//fmt.Println(dst, src)
+	if !copy {
+		// Move to new path
+		if err = os.Rename(src, dst); err != nil {
+			return "", fmt.Errorf("move %s to %s: %v", src, dst, err)
+		}
+		return dst, nil
+	}
+
 	if newHandle, err = os.OpenFile(dst, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm); err != nil {
 		return "", fmt.Errorf("open %s: %v", dst, err)
 	}
