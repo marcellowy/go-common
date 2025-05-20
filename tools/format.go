@@ -24,6 +24,12 @@ func ParseSizeUnit(s string) (byte int64, err error) {
 		unit string
 	)
 	s = strings.TrimSpace(s)
+	if IsNumber(s) {
+		if size, err = strconv.ParseInt(s, 10, 64); err != nil {
+			return
+		}
+		return size, nil
+	}
 	var reg *regexp.Regexp
 	if reg, err = regexp.Compile("([0-9]+)([A-Za-z]+)"); err != nil {
 		return
