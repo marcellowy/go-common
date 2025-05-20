@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/marcellowy/go-common/gogf/vlog"
 	"github.com/marcellowy/go-common/tools"
 	"io"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type sendFormUpload struct {
@@ -20,6 +22,12 @@ type sendFormUpload struct {
 }
 
 type OptionFunc func(*Client)
+
+func WithTimeout(timeout time.Duration) OptionFunc {
+	return func(client *Client) {
+		client.timeout = timeout
+	}
+}
 
 func WithProxy(addr string) OptionFunc {
 	return func(client *Client) {
@@ -60,16 +68,24 @@ type Client struct {
 	proxy     bool
 	proxyAddr string
 	header    map[string]string
-	response  *http.Response
+	timeout   time.Duration
+}
+
+type Response struct {
+	StatusCode int
+	Header     http.Header
+	Body       []byte
 }
 
 func NewHttpClient(opts ...OptionFunc) *Client {
-	client := &Client{
-		client: &http.Client{},
-	}
+	client := &Client{}
 	for _, opt := range opts {
 		opt(client)
 	}
+	if client.timeout == 0 {
+		client.timeout = time.Second * 5
+	}
+	client.client = &http.Client{Timeout: client.timeout}
 	client.configProxy()
 	return client
 }
@@ -115,7 +131,7 @@ func (h *Client) configProxy() {
 
 // Post
 // Don't forget close response body
-func (h *Client) Post(ctx context.Context, url string, data io.Reader) (*http.Response, error) {
+func (h *Client) Post(ctx context.Context, url string, data io.Reader) (*Response, error) {
 	var request, err = http.NewRequestWithContext(ctx, http.MethodPost, url, data)
 	if err != nil {
 		return nil, err
@@ -123,16 +139,17 @@ func (h *Client) Post(ctx context.Context, url string, data io.Reader) (*http.Re
 	for k, v := range h.header {
 		request.Header.Set(k, v)
 	}
-
-	if h.response, err = h.client.Do(request); err != nil {
+	var response *http.Response
+	if response, err = h.client.Do(request); err != nil {
 		return nil, err
 	}
-	return h.response, nil
+	defer tools.Close(response.Body)
+	return h.makeResponse(ctx, response)
 }
 
 // Get
 // Don't forget close response body
-func (h *Client) Get(ctx context.Context, url string) (*http.Response, error) {
+func (h *Client) Get(ctx context.Context, url string) (*Response, error) {
 	var request, err = http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -140,15 +157,39 @@ func (h *Client) Get(ctx context.Context, url string) (*http.Response, error) {
 	for k, v := range h.header {
 		request.Header.Set(k, v)
 	}
-	if h.response, err = h.client.Do(request); err != nil {
+	var response *http.Response
+	if response, err = h.client.Do(request); err != nil {
 		return nil, err
 	}
-	return h.response, nil
+	defer tools.Close(response.Body)
+	return h.makeResponse(ctx, response)
+}
+
+func (h *Client) makeResponse(ctx context.Context, response *http.Response) (resp *Response, err error) {
+	if response.StatusCode != http.StatusOK {
+		return &Response{
+				StatusCode: response.StatusCode,
+				Header:     response.Header,
+			},
+			fmt.Errorf("http status code: %d", response.StatusCode)
+	}
+	var (
+		body []byte
+	)
+	if body, err = io.ReadAll(response.Body); err != nil {
+		return nil, err
+	}
+	resp = &Response{
+		StatusCode: http.StatusOK,
+		Header:     response.Header,
+		Body:       body,
+	}
+	return
 }
 
 // PostForm
 // support upload file
-func (h *Client) PostForm(ctx context.Context, url string, formData map[string]string) (response *http.Response, err error) {
+func (h *Client) PostForm(ctx context.Context, url string, formData map[string]string) (response *Response, err error) {
 	bb := &bytes.Buffer{}
 	writer := multipart.NewWriter(bb)
 	var uploadFiles []*sendFormUpload

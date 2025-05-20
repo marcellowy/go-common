@@ -7,8 +7,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/marcellowy/go-common/tools"
-	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -110,15 +108,13 @@ func TestCreateFormBody(t *testing.T) {
 					t.Error(err)
 					return
 				}
-				defer tools.Close(response.Body)
-				cc, _ := io.ReadAll(response.Body)
 				type cs struct {
 					Code    int    `json:"code"`
 					Message string `json:"message"`
 					Test    string `json:"test"`
 				}
 				var csV = cs{}
-				if err = json.Unmarshal(cc, &csV); err != nil {
+				if err = json.Unmarshal(response.Body, &csV); err != nil {
 					t.Error(err)
 					return
 				}
@@ -138,15 +134,14 @@ func TestCreateFormBody(t *testing.T) {
 					t.Error(err)
 					return
 				}
-				defer tools.Close(response.Body)
-				cc, _ := io.ReadAll(response.Body)
+
 				type cs struct {
 					Code    int    `json:"code"`
 					Message string `json:"message"`
 					Name    string `json:"name"`
 				}
 				var csV = cs{}
-				if err = json.Unmarshal(cc, &csV); err != nil {
+				if err = json.Unmarshal(response.Body, &csV); err != nil {
 					t.Error(err)
 					return
 				}
@@ -166,15 +161,14 @@ func TestCreateFormBody(t *testing.T) {
 					t.Error(err)
 					return
 				}
-				defer tools.Close(response.Body)
-				cc, _ := io.ReadAll(response.Body)
+
 				type cs struct {
 					Code    int    `json:"code"`
 					Message string `json:"message"`
 					Name    string `json:"name"`
 				}
 				var csV = cs{}
-				if err = json.Unmarshal(cc, &csV); err != nil {
+				if err = json.Unmarshal(response.Body, &csV); err != nil {
 					t.Error(err)
 					return
 				}
