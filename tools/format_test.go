@@ -55,3 +55,34 @@ func TestFormatBytes(t *testing.T) {
 		})
 	}
 }
+
+func TestParseSizeUnit(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantByte int64
+		wantErr  bool
+	}{
+		{
+			name:     "1",
+			args:     args{s: "10M"},
+			wantByte: 1024 * 1024 * 10,
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotByte, err := ParseSizeUnit(tt.args.s)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseSizeUnit() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotByte != tt.wantByte {
+				t.Errorf("ParseSizeUnit() gotByte = %v, want %v", gotByte, tt.wantByte)
+			}
+		})
+	}
+}

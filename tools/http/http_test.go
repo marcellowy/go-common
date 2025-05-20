@@ -1,4 +1,4 @@
-package tools
+package http
 
 import (
 	"bytes"
@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/marcellowy/go-common/tools"
 	"io"
 	"net/http"
 	"os"
@@ -89,7 +90,7 @@ func TestCreateFormBody(t *testing.T) {
 				t.Error(err)
 				return
 			}
-			defer Close(response.Body)
+			defer tools.Close(response.Body)
 			cc, _ := io.ReadAll(response.Body)
 			type cs struct {
 				Code    int    `json:"code"`

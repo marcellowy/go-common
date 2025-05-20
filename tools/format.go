@@ -2,6 +2,9 @@ package tools
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -12,6 +15,46 @@ const (
 	TB = GB * 1024
 	PB = TB * 1024
 )
+
+// ParseSizeUnit
+// parse 10M/10MB/10m/10mb to byte or other kb/mb/gb/tb
+func ParseSizeUnit(s string) (byte int64, err error) {
+	var (
+		size int64
+		unit string
+	)
+	s = strings.TrimSpace(s)
+	var reg *regexp.Regexp
+	if reg, err = regexp.Compile("([0-9]+)([A-Za-z]+)"); err != nil {
+		return
+	}
+	match := reg.FindStringSubmatch(s)
+	if len(match) != 3 {
+		err = fmt.Errorf("parse size unit error")
+		return
+	}
+	if size, err = strconv.ParseInt(match[1], 10, 64); err != nil {
+		return
+	}
+	unit = match[2]
+	if len(unit) == 1 {
+		unit += "b"
+	}
+
+	switch strings.ToLower(unit) {
+	case "kb":
+		size = size * KB
+	case "mb":
+		size = size * MB
+	case "gb":
+		size = size * GB
+	case "tb":
+		size = size * TB
+	default:
+		return 0, fmt.Errorf("parse unit error")
+	}
+	return size, nil
+}
 
 func FormatBytes(bytes uint64) string {
 	switch {

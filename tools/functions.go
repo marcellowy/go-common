@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// RetryExecute 尝试多次执行一个函数
+// RetryExecute try exec f more time
 func RetryExecute(ctx context.Context, tryMaxTimes int, f func(current int) error) error {
 	var (
 		count = 0
