@@ -31,6 +31,7 @@ func WithProxy(addr string) OptionFunc {
 func WithProxyFromEnvironment() OptionFunc {
 	return func(client *Client) {
 		client.proxy = true
+		client.proxyAddr = ""
 	}
 }
 
