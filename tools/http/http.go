@@ -63,7 +63,9 @@ type Client struct {
 }
 
 func NewHttpClient(opts ...OptionFunc) *Client {
-	client := &Client{}
+	client := &Client{
+		client: &http.Client{},
+	}
 	for _, opt := range opts {
 		opt(client)
 	}
