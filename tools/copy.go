@@ -55,7 +55,11 @@ func copyInternal(copy bool, dst string, src ...string) error {
 			_, filename := filepath.Split(f)
 			//dstFile := dst + string(os.PathSeparator) + filename
 			dstFile := path.Join(dst, filename)
-			_, err = CopyFile(dstFile, f)
+			if copy {
+				_, err = CopyFile(dstFile, f)
+			} else {
+				_, err = MoveFile(dstFile, f)
+			}
 			return err
 		}
 		if err = filepath.WalkDir(f, walkDir(dst, f)); err != nil {
