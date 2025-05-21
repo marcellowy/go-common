@@ -108,7 +108,7 @@ func TestMove(t *testing.T) {
 		return
 	}
 	defer func() {
-		_ = os.RemoveAll("./test_move_dir1")
+		//_ = os.RemoveAll("./test_move_dir1")
 	}()
 
 	if err := os.MkdirAll("./test_move_dir2", os.ModePerm); err != nil {
@@ -116,7 +116,7 @@ func TestMove(t *testing.T) {
 		return
 	}
 	defer func() {
-		_ = os.RemoveAll("./test_move_dir2")
+		//_ = os.RemoveAll("./test_move_dir2")
 	}()
 
 	_ = os.WriteFile("./test_move_dir1/test1.txt", []byte("test1"), os.ModePerm)

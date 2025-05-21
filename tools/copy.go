@@ -62,7 +62,7 @@ func copyInternal(copy bool, dst string, src ...string) error {
 			}
 			return err
 		}
-		if err = filepath.WalkDir(f, walkDir(dst, f)); err != nil {
+		if err = filepath.WalkDir(f, walkDir(copy, dst, f)); err != nil {
 			return fmt.Errorf("walk %s: %v", f, err)
 		}
 	}
@@ -99,7 +99,7 @@ func DirHasPrefix(s, prefix string) bool {
 	return true
 }
 
-func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
+func walkDir(copy bool, rootDst, rootSrc string) fs.WalkDirFunc {
 	return func(path string, d fs.DirEntry, err error) error {
 
 		if DirHasPrefix(path, rootDst) {
@@ -114,7 +114,6 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 		srcPath := rootSrc + subPath
 
 		if d.IsDir() {
-
 			_ = os.MkdirAll(dstPath, os.ModePerm)
 			return nil
 		}
@@ -127,7 +126,12 @@ func walkDir(rootDst, rootSrc string) fs.WalkDirFunc {
 			return nil
 		}
 
-		_, err = CopyFile(dstPath, srcPath)
+		if copy {
+			_, err = CopyFile(dstPath, srcPath)
+		} else {
+			_, err = MoveFile(dstPath, srcPath)
+		}
+
 		return err
 	}
 }
