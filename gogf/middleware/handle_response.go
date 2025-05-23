@@ -22,6 +22,9 @@ type DefaultHandlerResponse struct {
 	Data    interface{} `json:"data"    dc:"Result data for certain request according API definition"`
 }
 
+// ResponseSuccessDefaultMessage default message
+var ResponseSuccessDefaultMessage = "success"
+
 const (
 	contentTypeEventStream  = "text/event-stream"
 	contentTypeOctetStream  = "application/octet-stream"
@@ -51,7 +54,7 @@ func HandlerResponse(r *ghttp.Request) {
 	}
 
 	var (
-		msg  = "success" // default success
+		msg  = ResponseSuccessDefaultMessage // default success
 		err  = r.GetError()
 		res  = r.GetHandlerResponse()
 		code = gerror.Code(err)
