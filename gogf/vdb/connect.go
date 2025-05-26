@@ -124,15 +124,17 @@ func NewConnectWithConfig(ctx context.Context, config *Config) (db *gorm.DB) {
 func NewQuickConnect(ctx context.Context, key string) (db *gorm.DB) {
 	var (
 		config = &Config{
-			User:        vconfig.Get(key + ".user").String(),
-			Password:    vconfig.Get(key + ".password").String(),
-			Host:        vconfig.Get(key + ".host").String(),
-			Port:        vconfig.Get(key + ".port").Int(),
-			Schema:      vconfig.Get(key + ".schema").String(),
-			Charset:     vconfig.Get(key + ".charset").String(),
-			MaxOpenConn: vconfig.Get(key + ".maxOpenConn").Int(),
-			MaxIdleConn: vconfig.Get(key + ".maxIdleConn").Int(),
-			Debug:       vconfig.Get(key + ".debug").Bool(),
+			User:         vconfig.Get(key + ".user").String(),
+			Password:     vconfig.Get(key + ".password").String(),
+			Host:         vconfig.Get(key + ".host").String(),
+			Port:         vconfig.Get(key + ".port").Int(),
+			Schema:       vconfig.Get(key + ".schema").String(),
+			Charset:      vconfig.Get(key+".charset", "UTF8MB4").String(),
+			MaxOpenConn:  vconfig.Get(key+".maxOpenConn", DefaultMaxOpenConn).Int(),
+			MaxIdleConn:  vconfig.Get(key+".maxIdleConn", DefaultMaxIdleConn).Int(),
+			Debug:        vconfig.Get(key+".debug", false).Bool(),
+			PrintSQL:     vconfig.Get(key+".printSQL", false).Bool(),
+			PrintSlowSQL: vconfig.Get(key+".printSlowSQL", false).Bool(),
 		}
 	)
 
