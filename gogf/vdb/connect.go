@@ -28,6 +28,8 @@ type Config struct {
 	MaxIdleConn     int
 	ConnMaxLifeTime time.Duration
 	Debug           bool
+	PrintSQL        bool
+	PrintSlowSQL    bool
 }
 
 func (c *Config) Hash() (string, error) {
@@ -61,11 +63,21 @@ func NewConnectWithConfig(ctx context.Context, config *Config) (db *gorm.DB) {
 	)
 
 	vlog.Debug(ctx, dsn)
+	var opts []GormLogOptions
 	var gConfig = &gorm.Config{}
-	if config.Debug {
-		vlog.Debug(ctx, "gorm debug open")
+	if config.PrintSQL {
+		vlog.Info(ctx, "gorm debug open print sql")
 		//gConfig.Logger = logger.Default.LogMode(logger.Info)
-		gConfig.Logger = NewGormLog()
+		opts = append(opts, GormLogWithPrintSQL())
+	}
+	if config.PrintSlowSQL {
+		vlog.Info(ctx, "gorm debug open print slow sql")
+		opts = append(opts, GormLogWithPrintSlowSQL())
+
+	}
+	if config.Debug {
+		vlog.Info(ctx, "gorm debug open")
+		gConfig.Logger = NewGormLog(opts...)
 	}
 
 	if db, err = gorm.Open(mysql.Open(dsn), gConfig); err != nil {

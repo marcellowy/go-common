@@ -12,6 +12,8 @@ import (
 type GormLogger struct {
 	SlowThreshold time.Duration
 	Name          []string
+	PrintSlowSQL  bool
+	PrintSQL      bool
 }
 
 func (gl GormLogger) LogMode(level gLogger.LogLevel) gLogger.Interface {
@@ -44,8 +46,14 @@ func (gl GormLogger) Trace(ctx context.Context, begin time.Time,
 	if elapsed > gl.SlowThreshold && gl.SlowThreshold > 0 {
 		// 慢查询
 		title = "SLOW SQL"
+		if gl.PrintSlowSQL {
+			vlog.Infof(ctx, "%s: %s [%.3fms]", title, sql, float64(elapsed.Nanoseconds())/1e6)
+		}
 	}
-	vlog.Infof(ctx, "%s: %s [%.3fms]", title, sql, float64(elapsed.Nanoseconds())/1e6)
+
+	if gl.PrintSQL {
+		vlog.Infof(ctx, "%s: %s [%.3fms]", title, sql, float64(elapsed.Nanoseconds())/1e6)
+	}
 }
 
 type GormLogOptions func(*GormLogger)
@@ -61,6 +69,20 @@ func GormLogWithSlowThreshold(st time.Duration) GormLogOptions {
 func GormLogWithName(name ...string) GormLogOptions {
 	return func(gormLogger *GormLogger) {
 		gormLogger.Name = name
+	}
+}
+
+// GormLogWithPrintSlowSQL print slow sql
+func GormLogWithPrintSlowSQL() GormLogOptions {
+	return func(gormLogger *GormLogger) {
+		gormLogger.PrintSlowSQL = true
+	}
+}
+
+// GormLogWithPrintSQL print sql
+func GormLogWithPrintSQL() GormLogOptions {
+	return func(gormLogger *GormLogger) {
+		gormLogger.PrintSQL = true
 	}
 }
 
