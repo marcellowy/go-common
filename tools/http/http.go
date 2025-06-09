@@ -21,6 +21,11 @@ type sendFormUpload struct {
 	Path      string
 }
 
+type FormFileBuffer struct {
+	Filename string
+	Buffer   []byte
+}
+
 type OptionFunc func(*Client)
 
 func WithTimeout(timeout time.Duration) OptionFunc {
@@ -129,8 +134,7 @@ func (h *Client) configProxy() {
 	}
 }
 
-// Post
-// Don't forget close response body
+// Post data
 func (h *Client) Post(ctx context.Context, url string, data io.Reader) (*Response, error) {
 	var request, err = http.NewRequestWithContext(ctx, http.MethodPost, url, data)
 	if err != nil {
@@ -189,28 +193,14 @@ func (h *Client) makeResponse(ctx context.Context, response *http.Response) (res
 
 // PostForm
 // support upload file
-func (h *Client) PostForm(ctx context.Context, url string, formData map[string]string) (response *Response, err error) {
-	bb := &bytes.Buffer{}
-	writer := multipart.NewWriter(bb)
-	var uploadFiles []*sendFormUpload
-	for k, v := range formData {
-		if strings.Contains(v, "@file:") {
-			uploadFiles = append(uploadFiles, &sendFormUpload{
-				FieldName: k,
-				Path:      strings.ReplaceAll(v, "@file:", ""),
-			})
-
-			continue
-		}
-		_ = writer.WriteField(k, v)
-	}
-
-	// create upload form
-	for _, v := range uploadFiles {
-		if err = createFormFile(ctx, v.FieldName, v.Path, &writer); err != nil {
-			vlog.Error(ctx, err)
-			return
-		}
+func (h *Client) PostForm(ctx context.Context, url string, formData map[string]interface{}) (response *Response, err error) {
+	var (
+		bb     *bytes.Buffer
+		writer *multipart.Writer
+	)
+	if bb, writer, err = CreateFormBody(ctx, formData); err != nil {
+		vlog.Warning(ctx, err)
+		return
 	}
 	_ = writer.Close()
 	h.SetHeader("Content-Type", writer.FormDataContentType())
@@ -238,30 +228,86 @@ func createFormFile(ctx context.Context, fieldName, filename string, writer **mu
 	return
 }
 
+func createFormFileFromBuffer(ctx context.Context, fieldName, filename string,
+	buffer io.Reader, writer **multipart.Writer) (err error) {
+
+	var uploadWriter io.Writer
+	if uploadWriter, err = (*writer).CreateFormFile(fieldName, filepath.Base(filename)); err != nil {
+		vlog.Error(ctx, err)
+		return
+	}
+
+	if _, err = io.Copy(uploadWriter, buffer); err != nil {
+		vlog.Error(ctx, err)
+		return
+	}
+	return
+}
+
 // CreateFormBody create http form body from map[string]string
-func CreateFormBody(ctx context.Context, data map[string]string) (body *bytes.Buffer, writer *multipart.Writer, err error) {
+func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffer, writer *multipart.Writer, err error) {
 	body = &bytes.Buffer{}
 	writer = multipart.NewWriter(body)
 	for k, v := range data {
-		if strings.Contains(v, "@file:") {
-			// upload file
-			// the "v" is file absolute path
-			file := strings.ReplaceAll(v, "@file:", "")
-			if err = createFormFile(ctx, k, file, &writer); err != nil {
+		switch v.(type) {
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			vv := fmt.Sprintf("%v", v)
+			if err = writer.WriteField(k, vv); err != nil {
 				vlog.Error(ctx, err)
 				return
 			}
-			continue
+		case string, []byte:
+
+			var vv string
+
+			switch v.(type) {
+			case string:
+				vv = v.(string)
+			case []byte:
+				vv = tools.BytesToString(v.([]byte))
+			}
+
+			tag := "@file:"
+			// 处理文件上传
+			if strings.HasPrefix(vv, tag) {
+				// upload file
+				// the "vv" is file path
+				file := vv[len(tag):]
+				if err = createFormFile(ctx, k, file, &writer); err != nil {
+					vlog.Error(ctx, err)
+					return
+				}
+				continue
+			}
+
+			// 处理常规
+			if err = writer.WriteField(k, vv); err != nil {
+				vlog.Error(ctx, err)
+				return
+			}
+		case *FormFileBuffer, FormFileBuffer:
+			// 处理buffer上传
+			var vv *FormFileBuffer
+			switch v.(type) {
+			case *FormFileBuffer:
+				vv = v.(*FormFileBuffer)
+			case FormFileBuffer:
+				vv_ := v.(FormFileBuffer)
+				vv = &vv_
+			}
+
+			if err = createFormFileFromBuffer(ctx, k, vv.Filename,
+				bytes.NewBuffer(vv.Buffer), &writer); err != nil {
+				vlog.Error(ctx, err)
+				return
+			}
 		}
-		if err = writer.WriteField(k, v); err != nil {
-			vlog.Error(ctx, err)
-			return
-		}
+
 	}
 	tools.Close(writer)
 	return
 }
 
-func CreateFormData(ctx context.Context, data map[string]string) (body *bytes.Buffer, writer *multipart.Writer, err error) {
+func CreateFormData(ctx context.Context, data map[string]any) (body *bytes.Buffer, writer *multipart.Writer, err error) {
 	return CreateFormBody(ctx, data)
 }

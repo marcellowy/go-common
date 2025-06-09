@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/marcellowy/go-common/gogf/vlog"
 	"net/http"
 	"os"
 	"strings"
@@ -27,7 +28,7 @@ func TestCreateFormBody(t *testing.T) {
 
 	type args struct {
 		ctx  context.Context
-		data map[string]string
+		data map[string]any
 	}
 	tests := []struct {
 		name     string
@@ -36,13 +37,17 @@ func TestCreateFormBody(t *testing.T) {
 		wantErr  bool
 	}{
 		{
-			name: "",
+			name: "1",
 			args: args{
 				ctx: context.Background(),
-				data: map[string]string{
+				data: map[string]any{
 					testKey: testValue,
 					"test2": "2",
 					"file":  "@file:" + uploadFilename,
+					"file2": &FormFileBuffer{
+						Filename: "zz.zip",
+						Buffer:   []byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+					},
 				},
 			},
 		},
@@ -87,6 +92,33 @@ func TestCreateFormBody(t *testing.T) {
 						"code":    0,
 						"message": "ok",
 						"name":    name,
+					})
+				}
+			})
+
+			svr.BindHandler("/test_form_file", func(r *ghttp.Request) {
+				if r.Request.Method == http.MethodPost {
+					name := r.GetRequest("name", "").String()
+					file1 := g.RequestFromCtx(r.GetCtx()).GetUploadFile("file")
+					if file1 == nil {
+						vlog.Error(r.GetCtx(), "file1 is empty")
+						return
+					}
+
+					file2 := g.RequestFromCtx(r.GetCtx()).GetUploadFile("file2")
+					if file2 == nil {
+						vlog.Error(r.GetCtx(), "file2 is empty")
+						return
+					}
+
+					r.Response.WriteJson(map[string]interface{}{
+						"code":       0,
+						"message":    "ok",
+						"name":       name,
+						"file1":      file1.Filename,
+						"file1_size": file1.Size,
+						"file2":      file2.Filename,
+						"file2_size": file2.Size,
 					})
 				}
 			})
@@ -174,6 +206,34 @@ func TestCreateFormBody(t *testing.T) {
 				}
 
 				if csV.Name != "123" {
+					t.Error("value err")
+					return
+				}
+			}
+
+			{
+				url := "http://127.0.0.1:47632/test_form_file?name=aaaa11222"
+				client := NewHttpClient()
+				response, err := client.PostForm(gctx.New(), url, tt.args.data)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+
+				vlog.Info(gctx.New(), response.Body)
+
+				type cs struct {
+					Code    int    `json:"code"`
+					Message string `json:"message"`
+					Name    string `json:"name"`
+				}
+				var csV = cs{}
+				if err = json.Unmarshal(response.Body, &csV); err != nil {
+					t.Error(err)
+					return
+				}
+
+				if csV.Name != "aaaa11222" {
 					t.Error("value err")
 					return
 				}
