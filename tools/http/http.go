@@ -250,6 +250,16 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 	writer = multipart.NewWriter(body)
 	for k, v := range data {
 		switch v.(type) {
+		case bool:
+			var vv = "false"
+			vv_ := v.(bool)
+			if vv_ {
+				vv = "true"
+			}
+			if err = writer.WriteField(k, vv); err != nil {
+				vlog.Error(ctx, err)
+				return
+			}
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 			vv := fmt.Sprintf("%v", v)
 			if err = writer.WriteField(k, vv); err != nil {
@@ -257,9 +267,7 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				return
 			}
 		case string, []byte:
-
 			var vv string
-
 			switch v.(type) {
 			case string:
 				vv = v.(string)
@@ -301,6 +309,9 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				vlog.Error(ctx, err)
 				return
 			}
+		default:
+			err = fmt.Errorf("unsupported type: %T", v)
+			return
 		}
 
 	}

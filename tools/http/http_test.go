@@ -48,6 +48,7 @@ func TestCreateFormBody(t *testing.T) {
 						Filename: "zz.zip",
 						Buffer:   []byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
 					},
+					"num": 123,
 				},
 			},
 		},
@@ -73,7 +74,6 @@ func TestCreateFormBody(t *testing.T) {
 					"message": "ok",
 					testKey:   test,
 				})
-				//fmt.Println(uploadFile.Filename, uploadFile.Size)
 			})
 
 			svr.BindHandler("/test_post", func(r *ghttp.Request) {
@@ -99,6 +99,7 @@ func TestCreateFormBody(t *testing.T) {
 			svr.BindHandler("/test_form_file", func(r *ghttp.Request) {
 				if r.Request.Method == http.MethodPost {
 					name := r.GetRequest("name", "").String()
+					num := r.GetRequest("num", 0).Int64()
 					file1 := g.RequestFromCtx(r.GetCtx()).GetUploadFile("file")
 					if file1 == nil {
 						vlog.Error(r.GetCtx(), "file1 is empty")
@@ -119,6 +120,7 @@ func TestCreateFormBody(t *testing.T) {
 						"file1_size": file1.Size,
 						"file2":      file2.Filename,
 						"file2_size": file2.Size,
+						"num":        num,
 					})
 				}
 			})
