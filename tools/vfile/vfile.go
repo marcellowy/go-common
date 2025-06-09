@@ -1,12 +1,16 @@
 package vfile
 
 import (
+	"fmt"
 	"io"
 )
 
 // ReadSpecifiedSize Read the specified size
 // from offset read size byte
 func ReadSpecifiedSize(f io.Reader, size int64) (b []byte, err error) {
+	if size <= 0 || f == nil {
+		return nil, fmt.Errorf("size or Reader error")
+	}
 	var (
 		buf            = make([]byte, 0)
 		readSize int64 = 0
