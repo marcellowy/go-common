@@ -16,11 +16,6 @@ import (
 	"time"
 )
 
-type sendFormUpload struct {
-	FieldName string
-	Path      string
-}
-
 type FormFileBuffer struct {
 	Filename string
 	Buffer   []byte
