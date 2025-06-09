@@ -27,9 +27,9 @@ type Config struct {
 	MaxOpenConn     int
 	MaxIdleConn     int
 	ConnMaxLifeTime time.Duration
-	Debug           bool
-	PrintSQL        bool
-	PrintSlowSQL    bool
+	Debug           bool // open debug
+	PrintSQL        bool // print all sql
+	PrintSlowSQL    bool // print slow sql
 }
 
 func (c *Config) Hash() (string, error) {
@@ -69,12 +69,15 @@ func NewConnectWithConfig(ctx context.Context, config *Config) (db *gorm.DB) {
 		vlog.Info(ctx, "gorm debug open print sql")
 		//gConfig.Logger = logger.Default.LogMode(logger.Info)
 		opts = append(opts, GormLogWithPrintSQL())
+		config.Debug = true
 	}
 	if config.PrintSlowSQL {
 		vlog.Info(ctx, "gorm debug open print slow sql")
 		opts = append(opts, GormLogWithPrintSlowSQL())
+		config.Debug = true
 
 	}
+
 	if config.Debug {
 		vlog.Info(ctx, "gorm debug open")
 		gConfig.Logger = NewGormLog(opts...)
