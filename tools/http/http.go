@@ -63,12 +63,19 @@ func WithUserAgent(userAgent string) OptionFunc {
 	}
 }
 
+func WithTransport(transport *http.Transport) OptionFunc {
+	return func(client *Client) {
+		client.transport = transport
+	}
+}
+
 type Client struct {
 	client    *http.Client
 	proxy     bool
 	proxyAddr string
 	header    map[string]string
 	timeout   time.Duration
+	transport *http.Transport
 }
 
 type Response struct {
