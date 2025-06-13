@@ -137,7 +137,7 @@ func TestCreateFormBody(t *testing.T) {
 				//fmt.Println(gotBody)
 				url := "http://127.0.0.1:47632/test"
 				client := NewHttpClient()
-				response, err := client.PostForm(gctx.New(), url, tt.args.data)
+				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
 				if err != nil {
 					t.Error(err)
 					return
@@ -163,7 +163,7 @@ func TestCreateFormBody(t *testing.T) {
 				//fmt.Println(gotBody)
 				url := "http://127.0.0.1:47632/test_post"
 				client := NewHttpClient()
-				response, err := client.Post(gctx.New(), url, strings.NewReader(`{"name":"123"}`))
+				response, err := client.PostData(gctx.New(), url, strings.NewReader(`{"name":"123"}`))
 				if err != nil {
 					t.Error(err)
 					return
@@ -190,7 +190,7 @@ func TestCreateFormBody(t *testing.T) {
 				//fmt.Println(gotBody)
 				url := "http://127.0.0.1:47632/test_post?name=123"
 				client := NewHttpClient()
-				response, err := client.Get(gctx.New(), url)
+				response, err := client.GetData(gctx.New(), url)
 				if err != nil {
 					t.Error(err)
 					return
@@ -216,7 +216,7 @@ func TestCreateFormBody(t *testing.T) {
 			{
 				url := "http://127.0.0.1:47632/test_form_file?name=aaaa11222"
 				client := NewHttpClient()
-				response, err := client.PostForm(gctx.New(), url, tt.args.data)
+				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
 				if err != nil {
 					t.Error(err)
 					return
