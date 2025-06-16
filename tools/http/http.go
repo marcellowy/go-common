@@ -16,50 +16,8 @@ import (
 
 type FormFileBuffer struct {
 	Filename string
-	Buffer   []byte
+	Buffer   io.Reader
 }
-
-//type OptionFunc func(*Client)
-//
-//func WithTimeout(timeout time.Duration) OptionFunc {
-//	return func(client *Client) {
-//		client.timeout = timeout
-//	}
-//}
-//
-//func WithProxy(addr string) OptionFunc {
-//	return func(client *Client) {
-//		client.proxy = true
-//		client.proxyAddr = addr
-//	}
-//}
-//
-//func WithProxyFromEnvironment() OptionFunc {
-//	return func(client *Client) {
-//		client.proxy = true
-//		client.proxyAddr = ""
-//	}
-//}
-//
-//func WithHeader(header map[string]string) OptionFunc {
-//	return func(client *Client) {
-//		if client.header == nil {
-//			client.header = make(map[string]string)
-//		}
-//		for k, v := range header {
-//			client.header[k] = v
-//		}
-//	}
-//}
-//
-//func WithUserAgent(userAgent string) OptionFunc {
-//	return func(client *Client) {
-//		if client.header == nil {
-//			client.header = make(map[string]string)
-//		}
-//		client.header["User-Agent"] = userAgent
-//	}
-//}
 
 type Client struct {
 	http.Client
@@ -73,16 +31,7 @@ type Response struct {
 }
 
 func NewHttpClient() *Client {
-	client := &Client{}
-	//for _, opt := range opts {
-	//	opt(client)
-	//}
-	//if client.timeout == 0 {
-	//	client.timeout = time.Second * 5
-	//}
-	//client.client = &http.Client{Timeout: client.timeout}
-	//client.configProxy()
-	return client
+	return &Client{}
 }
 
 func (h *Client) SetHeader(key, value string) {
@@ -102,27 +51,6 @@ func (h *Client) DelHeader(key string) {
 func (h *Client) ClearHeader(key string) {
 	h.header = nil
 }
-
-//	func (h *Client) configProxy() {
-//		if !h.proxy {
-//			return
-//		}
-//		var (
-//			proxy *url.URL
-//			err   error
-//		)
-//		if proxy, err = url.Parse(h.proxyAddr); err != nil {
-//			return
-//		}
-//		var pu = http.ProxyURL(proxy)
-//		if h.proxyAddr == "" {
-//			// use system proxy
-//			pu = http.ProxyFromEnvironment
-//		}
-//		h.client.Transport = &http.Transport{
-//			Proxy: pu,
-//		}
-//	}
 
 // PostData post data
 func (h *Client) PostData(ctx context.Context, url string, data io.Reader) (*Response, error) {
@@ -182,6 +110,21 @@ func (h *Client) makeResponse(ctx context.Context, response *http.Response) (res
 
 // PostUploadForm
 // support upload file
+//
+//		 use FormFileBuffer
+//
+//			PostUploadForm(ctx, "http:/example.org/upload.php", map[string]any{
+//				"fieldName": &FormFileBuffer{
+//					"Filename": "test.zip", // filename
+//					"Buffer": bytes.NewBuffer([]byte(...)), // buffer from file byte
+//				}
+//			})
+//
+//	 use @file
+//
+//		PostUploadForm(ctx, "http:/example.org/upload.php", map[string]any{
+//			"fieldName": "@file:/path/to/file",
+//		})
 func (h *Client) PostUploadForm(ctx context.Context, url string, formData map[string]interface{}) (response *Response, err error) {
 	var (
 		bb     *bytes.Buffer
@@ -290,8 +233,7 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				vv_ := v.(FormFileBuffer)
 				vv = &vv_
 			}
-			if err = createFormFileFromBuffer(ctx, k, vv.Filename,
-				bytes.NewBuffer(vv.Buffer), &writer); err != nil {
+			if err = createFormFileFromBuffer(ctx, k, vv.Filename, vv.Buffer, &writer); err != nil {
 				vlog.Error(ctx, err)
 				return
 			}

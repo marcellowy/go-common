@@ -46,7 +46,7 @@ func TestCreateFormBody(t *testing.T) {
 					"file":  "@file:" + uploadFilename,
 					"file2": &FormFileBuffer{
 						Filename: "zz.zip",
-						Buffer:   []byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+						Buffer:   bytes.NewBuffer([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
 					},
 					"num": 123,
 				},
@@ -216,6 +216,7 @@ func TestCreateFormBody(t *testing.T) {
 			{
 				url := "http://127.0.0.1:47632/test_form_file?name=aaaa11222"
 				client := NewHttpClient()
+
 				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
 				if err != nil {
 					t.Error(err)
