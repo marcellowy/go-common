@@ -14,6 +14,8 @@ import (
 	"strings"
 )
 
+const uploadTag = "@file"
+
 type FormFileBuffer struct {
 	Filename string
 	Buffer   io.Reader
@@ -125,7 +127,7 @@ func (h *Client) makeResponse(ctx context.Context, response *http.Response) (res
 //		PostUploadForm(ctx, "http:/example.org/upload.php", map[string]any{
 //			"fieldName": "@file:/path/to/file",
 //		})
-func (h *Client) PostUploadForm(ctx context.Context, url string, formData map[string]interface{}) (response *Response, err error) {
+func (h *Client) PostUploadForm(ctx context.Context, url string, formData map[string]any) (response *Response, err error) {
 	var (
 		bb     *bytes.Buffer
 		writer *multipart.Writer
@@ -205,12 +207,11 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				vv = tools.BytesToString(v.([]byte))
 			}
 
-			tag := "@file:"
 			// 处理文件上传
-			if strings.HasPrefix(vv, tag) {
+			if strings.HasPrefix(vv, uploadTag) {
 				// upload file
 				// the "vv" is file path
-				file := vv[len(tag):]
+				file := vv[len(uploadTag):]
 				if err = createFormFile(ctx, k, file, &writer); err != nil {
 					vlog.Error(ctx, err)
 					return
