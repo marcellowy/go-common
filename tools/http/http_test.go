@@ -17,8 +17,12 @@ import (
 
 func TestCreateFormBody(t *testing.T) {
 
+	var err error
 	uploadFilename := "test-upload-file.txt"
-	_ = os.WriteFile(uploadFilename, []byte("test123"), os.ModePerm)
+	if err = os.WriteFile(uploadFilename, []byte("test123"), os.ModePerm); err != nil {
+		t.Error(err)
+		return
+	}
 	defer func() {
 		_ = os.Remove(uploadFilename)
 	}()
