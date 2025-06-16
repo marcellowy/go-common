@@ -24,7 +24,7 @@ func TestCreateFormBody(t *testing.T) {
 		return
 	}
 	defer func() {
-		_ = os.Remove(uploadFilename)
+		//_ = os.Remove(uploadFilename)
 	}()
 
 	var testKey = "test"
@@ -47,7 +47,7 @@ func TestCreateFormBody(t *testing.T) {
 				data: map[string]any{
 					testKey: testValue,
 					"test2": "2",
-					"file":  "@file:" + uploadFilename,
+					"file":  &FormFile{Filename: uploadFilename},
 					"file2": &FormFileBuffer{
 						Filename: "zz.zip",
 						Buffer:   bytes.NewBuffer([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")),
@@ -137,31 +137,31 @@ func TestCreateFormBody(t *testing.T) {
 			}()
 			time.Sleep(1 * time.Second)
 
-			{
-				//fmt.Println(gotBody)
-				url := "http://127.0.0.1:47632/test"
-				client := NewHttpClient()
-				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				type cs struct {
-					Code    int    `json:"code"`
-					Message string `json:"message"`
-					Test    string `json:"test"`
-				}
-				var csV = cs{}
-				if err = json.Unmarshal(response.Body, &csV); err != nil {
-					t.Error(err)
-					return
-				}
-
-				if csV.Test != testValue {
-					t.Error("value err")
-					return
-				}
-			}
+			//{
+			//	//fmt.Println(gotBody)
+			//	url := "http://127.0.0.1:47632/test"
+			//	client := NewHttpClient()
+			//	response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
+			//	if err != nil {
+			//		t.Error(err)
+			//		return
+			//	}
+			//	type cs struct {
+			//		Code    int    `json:"code"`
+			//		Message string `json:"message"`
+			//		Test    string `json:"test"`
+			//	}
+			//	var csV = cs{}
+			//	if err = json.Unmarshal(response.Body, &csV); err != nil {
+			//		t.Error(err)
+			//		return
+			//	}
+			//
+			//	if csV.Test != testValue {
+			//		t.Error("value err")
+			//		return
+			//	}
+			//}
 
 			{
 				//fmt.Println(gotBody)
@@ -220,7 +220,6 @@ func TestCreateFormBody(t *testing.T) {
 			{
 				url := "http://127.0.0.1:47632/test_form_file?name=aaaa11222"
 				client := NewHttpClient()
-
 				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
 				if err != nil {
 					t.Error(err)

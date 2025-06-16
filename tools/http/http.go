@@ -11,14 +11,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
-const uploadTag = "@file"
-
 type FormFileBuffer struct {
-	Filename string
+	Filename string // filename, example: sample.7z
 	Buffer   io.Reader
+}
+
+type FormFile struct {
+	Filename string // full path filename, example: /path/to/file.7z
 }
 
 type Client struct {
@@ -189,13 +190,13 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				vv = "true"
 			}
 			if err = writer.WriteField(k, vv); err != nil {
-				vlog.Error(ctx, err)
+				vlog.Error(ctx, err, k, vv)
 				return
 			}
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-			vv := fmt.Sprintf("%v", v)
+			vv := fmt.Sprintf("%d", v)
 			if err = writer.WriteField(k, vv); err != nil {
-				vlog.Error(ctx, err)
+				vlog.Error(ctx, err, k, vv)
 				return
 			}
 		case string, []byte:
@@ -207,20 +208,20 @@ func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffe
 				vv = tools.BytesToString(v.([]byte))
 			}
 
-			// 处理文件上传
-			if strings.HasPrefix(vv, uploadTag) {
-				// upload file
-				// the "vv" is file path
-				file := vv[len(uploadTag):]
-				if err = createFormFile(ctx, k, file, &writer); err != nil {
-					vlog.Error(ctx, err)
-					return
-				}
-				continue
-			}
-
-			// 处理常规
 			if err = writer.WriteField(k, vv); err != nil {
+				vlog.Error(ctx, err, k, vv)
+				return
+			}
+		case *FormFile, FormFile:
+			var vv *FormFile
+			switch v.(type) {
+			case *FormFile:
+				vv = v.(*FormFile)
+			case FormFile:
+				vv_ := v.(FormFile)
+				vv = &vv_
+			}
+			if err = createFormFile(ctx, k, vv.Filename, &writer); err != nil {
 				vlog.Error(ctx, err)
 				return
 			}
