@@ -123,7 +123,7 @@ func (h *Client) makeResponse(ctx context.Context, response *http.Response) (res
 //				}
 //			})
 //
-//	 use @file
+//	 use FormFile
 //
 //		PostUploadForm(ctx, "http:/example.org/upload.php", map[string]any{
 //			"fieldName": &FormFile{Filename:"/path/to/filename"},
