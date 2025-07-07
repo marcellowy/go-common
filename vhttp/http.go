@@ -1,6 +1,4 @@
-// Package http
-// Deprecate: use `vhttp` instead
-package http
+package vhttp
 
 import (
 	"bytes"
@@ -24,8 +22,6 @@ type FormFile struct {
 	Filename string // full path filename, example: /path/to/file.7z
 }
 
-// Client
-// Deprecate: use `vhttp.Client` instead
 type Client struct {
 	http.Client
 	header map[string]string
@@ -37,8 +33,6 @@ type Response struct {
 	Body       []byte
 }
 
-// NewHttpClient
-// Deprecate: use `vhttp.NewHttpClient` instead
 func NewHttpClient() *Client {
 	return &Client{}
 }
@@ -62,7 +56,6 @@ func (h *Client) ClearHeader(key string) {
 }
 
 // PostData post data
-// Deprecate: use `vhttp.CreateFormBody` instead
 func (h *Client) PostData(ctx context.Context, url string, data io.Reader) (*Response, error) {
 	var request, err = http.NewRequest(http.MethodPost, url, data)
 	if err != nil {
@@ -80,7 +73,6 @@ func (h *Client) PostData(ctx context.Context, url string, data io.Reader) (*Res
 }
 
 // GetData from url
-// Deprecate: use `vhttp.CreateFormBody` instead
 func (h *Client) GetData(ctx context.Context, url string) (*Response, error) {
 	var request, err = http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -136,8 +128,6 @@ func (h *Client) makeResponse(ctx context.Context, response *http.Response) (res
 //		PostUploadForm(ctx, "http:/example.org/upload.php", map[string]any{
 //			"fieldName": &FormFile{Filename:"/path/to/filename"},
 //		})
-//
-// Deprecate: use `vhttp.CreateFormBody` instead
 func (h *Client) PostUploadForm(ctx context.Context, url string, formData map[string]any) (response *Response, err error) {
 	var (
 		bb     *bytes.Buffer
@@ -188,7 +178,6 @@ func createFormFileFromBuffer(ctx context.Context, fieldName, filename string,
 }
 
 // CreateFormBody create http form body from map[string]string
-// Deprecate: use `vhttp.CreateFormBody` instead
 func CreateFormBody(ctx context.Context, data map[string]any) (body *bytes.Buffer, writer *multipart.Writer, err error) {
 	body = &bytes.Buffer{}
 	writer = multipart.NewWriter(body)
