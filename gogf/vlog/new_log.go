@@ -8,5 +8,5 @@ import (
 
 // New logger
 func New(key string) *glog.Logger {
-	return g.Log(key).Line()
+	return g.Log(key).Line(true)
 }
