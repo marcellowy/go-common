@@ -4,15 +4,17 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/marcellowy/go-common/gogf/vlog"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/marcellowy/go-common/gogf/vlog"
 )
 
 func TestCreateFormBody(t *testing.T) {
@@ -24,7 +26,7 @@ func TestCreateFormBody(t *testing.T) {
 		return
 	}
 	defer func() {
-		//_ = os.Remove(uploadFilename)
+		_ = os.Remove(uploadFilename)
 	}()
 
 	var testKey = "test"
@@ -62,7 +64,7 @@ func TestCreateFormBody(t *testing.T) {
 
 			svr := g.Server()
 			//svr := ghttp.Server{}
-			svr.SetAddr("127.0.0.1:47632")
+			//svr.SetAddr("127.0.0.1:47632")
 			svr.BindHandler("/test", func(r *ghttp.Request) {
 				uploadFile := r.GetUploadFile("file")
 				if uploadFile == nil {
@@ -163,9 +165,11 @@ func TestCreateFormBody(t *testing.T) {
 			//	}
 			//}
 
+			var baseURL = fmt.Sprintf("http://127.0.0.1%s", svr.GetListenedAddress())
+
 			{
 				//fmt.Println(gotBody)
-				url := "http://127.0.0.1:47632/test_post"
+				url := baseURL + "/test_post"
 				client := NewHttpClient()
 				response, err := client.PostData(gctx.New(), url, strings.NewReader(`{"name":"123"}`))
 				if err != nil {
@@ -192,7 +196,7 @@ func TestCreateFormBody(t *testing.T) {
 
 			{
 				//fmt.Println(gotBody)
-				url := "http://127.0.0.1:47632/test_post?name=123"
+				url := baseURL + "/test_post?name=123"
 				client := NewHttpClient()
 				response, err := client.GetData(gctx.New(), url)
 				if err != nil {
@@ -218,7 +222,7 @@ func TestCreateFormBody(t *testing.T) {
 			}
 
 			{
-				url := "http://127.0.0.1:47632/test_form_file?name=aaaa11222"
+				url := baseURL + "/test_form_file?name=aaaa11222"
 				client := NewHttpClient()
 				response, err := client.PostUploadForm(gctx.New(), url, tt.args.data)
 				if err != nil {
