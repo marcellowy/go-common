@@ -3,7 +3,9 @@ module github.com/marcellowy/go-common
 go 1.18
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/gogf/gf/v2 v2.7.0
+	github.com/jlaffaye/ftp v0.2.0
 	github.com/stretchr/testify v1.8.3
 	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8
 	golang.org/x/text v0.14.0
@@ -26,7 +28,6 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/jlaffaye/ftp v0.2.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
